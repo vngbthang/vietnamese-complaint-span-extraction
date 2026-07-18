@@ -160,21 +160,39 @@ class BioDataset(Dataset):
             return_tensors='pt',
         )
 
-        word_ids = encoding.word_ids()
-        labels = []
-        for word_id in word_ids:
-            if word_id is None:
-                labels.append(-100)
-            else:
-                original_tag = record.bio_tags[word_id] if word_id < len(record.bio_tags) else 'O'
-                labels.append(self.label2id.get(original_tag, 0))
+        if getattr(self.tokenizer, 'is_fast', False):
+            word_ids = encoding.word_ids()
+            labels = []
+            for word_id in word_ids:
+                if word_id is None:
+                    labels.append(-100)
+                else:
+                    original_tag = record.bio_tags[word_id] if word_id < len(record.bio_tags) else 'O'
+                    labels.append(self.label2id.get(original_tag, 0))
+        else:
+            from src.tokenization_utils import encode_tokens_with_labels
+            result = encode_tokens_with_labels(
+                self.tokenizer,
+                record.tokens,
+                record.bio_tags,
+                self.label2id,
+                self.max_length,
+            )
+            labels = result["labels"]
 
-        return {
-            'input_ids': encoding['input_ids'].squeeze(0),
-            'attention_mask': encoding['attention_mask'].squeeze(0),
-            'labels': torch.tensor(labels, dtype=torch.long),
-            'word_ids': word_ids,
-        }
+        if getattr(self.tokenizer, 'is_fast', False):
+            return {
+                'input_ids': encoding['input_ids'].squeeze(0),
+                'attention_mask': encoding['attention_mask'].squeeze(0),
+                'labels': torch.tensor(labels, dtype=torch.long),
+                'word_ids': word_ids,
+            }
+        else:
+            return {
+                'input_ids': torch.tensor(encoding['input_ids'].squeeze(0), dtype=torch.long),
+                'attention_mask': encoding['attention_mask'].squeeze(0),
+                'labels': torch.tensor(labels, dtype=torch.long),
+            }
 
 
 class TokenClassificationDataset(Dataset):
@@ -201,31 +219,44 @@ class TokenClassificationDataset(Dataset):
             tokens = self.tokenized_text[idx]
             text = ' '.join(tokens)
         else:
-            text = ' '.join(record.tokens)
+            tokens = record.tokens
 
-        encoding = self.tokenizer(
-            text,
-            max_length=self.max_length,
-            padding='max_length',
-            truncation=True,
-            is_split_into_words=True,
-            return_tensors='pt',
-        )
-
-        word_ids = encoding.word_ids()
-        labels = []
-        for word_id in word_ids:
-            if word_id is None:
-                labels.append(-100)
-            else:
-                original_tag = record.bio_tags[word_id] if word_id < len(record.bio_tags) else 'O'
-                labels.append(self.label2id.get(original_tag, 0))
-
-        return {
-            'input_ids': encoding['input_ids'].squeeze(0),
-            'attention_mask': encoding['attention_mask'].squeeze(0),
-            'labels': torch.tensor(labels, dtype=torch.long),
-        }
+        if getattr(self.tokenizer, 'is_fast', False):
+            encoding = self.tokenizer(
+                ' '.join(tokens),
+                max_length=self.max_length,
+                padding='max_length',
+                truncation=True,
+                is_split_into_words=True,
+                return_tensors='pt',
+            )
+            word_ids = encoding.word_ids()
+            labels = []
+            for word_id in word_ids:
+                if word_id is None:
+                    labels.append(-100)
+                else:
+                    original_tag = record.bio_tags[word_id] if word_id < len(record.bio_tags) else 'O'
+                    labels.append(self.label2id.get(original_tag, 0))
+            return {
+                'input_ids': encoding['input_ids'].squeeze(0),
+                'attention_mask': encoding['attention_mask'].squeeze(0),
+                'labels': torch.tensor(labels, dtype=torch.long),
+            }
+        else:
+            from src.tokenization_utils import encode_tokens_with_labels
+            result = encode_tokens_with_labels(
+                self.tokenizer,
+                tokens,
+                record.bio_tags,
+                self.label2id,
+                self.max_length,
+            )
+            return {
+                'input_ids': torch.tensor(result["input_ids"], dtype=torch.long),
+                'attention_mask': torch.tensor(result["attention_mask"], dtype=torch.long),
+                'labels': torch.tensor(result["labels"], dtype=torch.long),
+            }
 
 
 def compute_class_weights(records: List[BioRecord], label2id: Dict[str, int]) -> torch.Tensor:

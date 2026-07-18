@@ -28,28 +28,35 @@ def align_labels_to_subwords(
     Returns:
         Tuple of (input_ids, aligned_labels)
     """
-    encoding = tokenizer(
-        text,
-        max_length=max_length,
-        padding='max_length',
-        truncation=True,
-        return_tensors='pt',
+    if getattr(tokenizer, "is_fast", False):
+        try:
+            encoding = tokenizer(
+                text,
+                max_length=max_length,
+                padding='max_length',
+                truncation=True,
+                return_tensors='pt',
+            )
+            input_ids = encoding['input_ids'].squeeze(0).tolist()
+            word_ids = encoding.word_ids()
+
+            aligned_labels = []
+            for word_id in word_ids:
+                if word_id is None:
+                    aligned_labels.append(ignore_label_id)
+                elif word_id < len(bio_tags):
+                    tag = bio_tags[word_id]
+                    aligned_labels.append(label2id.get(tag, label2id.get('O', 0)))
+                else:
+                    aligned_labels.append(label2id.get('O', 0))
+            return input_ids, aligned_labels
+        except Exception:
+            pass
+
+    tokens = text.split()
+    return align_labels_pre_tokenized(
+        tokens, bio_tags, tokenizer, label2id, max_length, ignore_label_id
     )
-
-    input_ids = encoding['input_ids'].squeeze(0).tolist()
-    word_ids = encoding.word_ids()
-
-    aligned_labels = []
-    for word_id in word_ids:
-        if word_id is None:
-            aligned_labels.append(ignore_label_id)
-        elif word_id < len(bio_tags):
-            tag = bio_tags[word_id]
-            aligned_labels.append(label2id.get(tag, label2id.get('O', 0)))
-        else:
-            aligned_labels.append(label2id.get('O', 0))
-
-    return input_ids, aligned_labels
 
 
 def align_labels_pre_tokenized(
@@ -74,29 +81,8 @@ def align_labels_pre_tokenized(
     Returns:
         Tuple of (input_ids, aligned_labels)
     """
-    encoding = tokenizer(
-        tokens,
-        is_split_into_words=True,
-        max_length=max_length,
-        padding='max_length',
-        truncation=True,
-        return_tensors='pt',
-    )
-
-    input_ids = encoding['input_ids'].squeeze(0).tolist()
-    word_ids = encoding.word_ids()
-
-    aligned_labels = []
-    for word_id in word_ids:
-        if word_id is None:
-            aligned_labels.append(ignore_label_id)
-        elif word_id < len(bio_tags):
-            tag = bio_tags[word_id]
-            aligned_labels.append(label2id.get(tag, label2id.get('O', 0)))
-        else:
-            aligned_labels.append(label2id.get('O', 0))
-
-    return input_ids, aligned_labels
+    result = encode_tokens_with_labels(tokenizer, tokens, bio_tags, label2id, max_length)
+    return result["input_ids"], result["labels"]
 
 
 def encode_tokens_with_labels(
@@ -127,113 +113,109 @@ def encode_tokens_with_labels(
         Dict with keys: input_ids, attention_mask, labels.
         All lists have length == max_length.
     """
-    special_count = tokenizer.num_special_tokens_to_add(pair=False)
-    available_len = max_length - special_count
+    if len(tokens) != len(labels):
+        raise ValueError(f"tokens and labels length mismatch: {len(tokens)} vs {len(labels)}")
 
-    # ---- Try fast tokenizer path ----
-    batch_enc = tokenizer(
-        tokens,
-        is_split_into_words=True,
-        truncation=True,
-        padding="max_length",
-        max_length=max_length,
-        return_attention_mask=True,
-        return_tensors=None,
-    )
+    # Fast tokenizer path only if tokenizer.is_fast is True
+    if getattr(tokenizer, "is_fast", False):
+        try:
+            enc = tokenizer(
+                tokens,
+                is_split_into_words=True,
+                truncation=True,
+                padding="max_length",
+                max_length=max_length,
+                return_attention_mask=True,
+            )
 
-    if hasattr(batch_enc, "word_ids"):
-        # Fast tokenizer: use word_ids() for alignment
-        word_ids_list = batch_enc.word_ids()
-        input_ids = batch_enc["input_ids"]
-        attention_mask = batch_enc["attention_mask"]
+            word_ids = enc.word_ids()
 
-        aligned_labels = []
-        for wid in word_ids_list:
-            if wid is None:
-                aligned_labels.append(-100)
-            elif wid < len(labels):
-                tag = labels[wid]
-                aligned_labels.append(label2id.get(tag, label2id.get("O", 0)))
-            else:
-                aligned_labels.append(label2id.get("O", 0))
+            aligned_labels = []
+            previous_word_id = None
 
-        return {
-            "input_ids": input_ids,
-            "attention_mask": attention_mask,
-            "labels": aligned_labels,
-        }
+            for word_id in word_ids:
+                if word_id is None:
+                    aligned_labels.append(-100)
+                elif word_id != previous_word_id:
+                    aligned_labels.append(label2id[labels[word_id]])
+                else:
+                    aligned_labels.append(-100)
+                previous_word_id = word_id
 
-    # ---- Slow tokenizer fallback: manual per-token encoding ----
-    print("  [TOKENIZER] Using slow-tokenizer manual alignment fallback.")
+            enc["labels"] = aligned_labels
 
+            assert len(enc["input_ids"]) == max_length
+            assert len(enc["attention_mask"]) == max_length
+            assert len(enc["labels"]) == max_length
+
+            return {
+                "input_ids": enc["input_ids"],
+                "attention_mask": enc["attention_mask"],
+                "labels": enc["labels"],
+            }
+
+        except Exception as e:
+            print(f"Fast tokenizer alignment failed, falling back to manual alignment: {repr(e)}")
+
+    # Slow tokenizer fallback — used for PhoBERT and any non-fast tokenizer
     raw_input_ids: List[int] = []
     raw_label_ids: List[int] = []
 
     for token, label in zip(tokens, labels):
-        sub_ids = tokenizer.encode(
-            token,
-            add_special_tokens=False,
-            return_attention_mask=False,
-        )
-        if not sub_ids:
+        if token is None:
             continue
+        token = str(token)
+
+        sub_ids = tokenizer.encode(token, add_special_tokens=False)
+
+        if len(sub_ids) == 0:
+            continue
+
         raw_input_ids.extend(sub_ids)
-        raw_label_ids.append(label2id.get(label, label2id.get("O", 0)))
+        raw_label_ids.append(label2id[label])
         raw_label_ids.extend([-100] * (len(sub_ids) - 1))
 
-    # Truncate to available space (leave room for special tokens)
+    special_count = tokenizer.num_special_tokens_to_add(pair=False)
+    available_len = max_length - special_count
+
     raw_input_ids = raw_input_ids[:available_len]
     raw_label_ids = raw_label_ids[:available_len]
 
-    # Add special tokens and pad to max_length
-    encoded = tokenizer.prepare_for_model(
+    enc = tokenizer.prepare_for_model(
         raw_input_ids,
         add_special_tokens=True,
         max_length=max_length,
         padding="max_length",
         truncation=True,
         return_attention_mask=True,
+        return_special_tokens_mask=True,
     )
-
-    # Reconstruct labels respecting special-token positions
-    special_mask = encoded.get("special_tokens_mask", None)
-    if special_mask is None:
-        # Fallback: manually compute special token positions
-        # CLS is at position 0, SEP is at last non-padding position
-        input_ids = encoded["input_ids"]
-        pad_token_id = tokenizer.pad_token_id
-        sep_token_id = tokenizer.sep_token_id
-        special_mask = [0] * len(input_ids)
 
     final_labels: List[int] = []
-    raw_idx = 0
-    for mask_val in special_mask:
-        if mask_val == 1:
-            final_labels.append(-100)
-        elif raw_idx < len(raw_label_ids):
-            final_labels.append(raw_label_ids[raw_idx])
-            raw_idx += 1
-        else:
-            final_labels.append(-100)
+    raw_label_pointer = 0
 
-    # Ensure padding tokens have -100
-    attention_mask = encoded["attention_mask"]
-    for i in range(len(final_labels)):
+    input_ids = enc["input_ids"]
+    attention_mask = enc["attention_mask"]
+    special_tokens_mask = enc["special_tokens_mask"]
+
+    for i in range(len(input_ids)):
         if attention_mask[i] == 0:
-            final_labels[i] = -100
+            final_labels.append(-100)
+        elif special_tokens_mask[i] == 1:
+            final_labels.append(-100)
+        else:
+            if raw_label_pointer < len(raw_label_ids):
+                final_labels.append(raw_label_ids[raw_label_pointer])
+                raw_label_pointer += 1
+            else:
+                final_labels.append(-100)
 
-    assert len(encoded["input_ids"]) == max_length, (
-        f"input_ids length {len(encoded['input_ids'])} != max_length {max_length}"
-    )
-    assert len(attention_mask) == max_length, (
-        f"attention_mask length {len(attention_mask)} != max_length {max_length}"
-    )
-    assert len(final_labels) == max_length, (
-        f"labels length {len(final_labels)} != max_length {max_length}"
-    )
+    assert len(input_ids) == max_length
+    assert len(attention_mask) == max_length
+    assert len(final_labels) == max_length
 
     return {
-        "input_ids": encoded["input_ids"],
+        "input_ids": input_ids,
         "attention_mask": attention_mask,
         "labels": final_labels,
     }

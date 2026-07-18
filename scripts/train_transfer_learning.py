@@ -333,6 +333,8 @@ def train_transfer(
     aux_id2label = {v: k for k, v in aux_label2id.items()}
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
+    print(f"  Tokenizer class: {tokenizer.__class__.__name__}")
+    print(f"  Tokenizer is_fast: {getattr(tokenizer, 'is_fast', False)}")
 
     # Sanity check on first 3 aux records
     encode_tokens_with_labels_sanity_check(

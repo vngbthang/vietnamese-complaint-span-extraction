@@ -74,46 +74,29 @@ def prepare_hf_dataset(
     label2id: Dict[str, int],
     max_length: int = 256,
 ):
-    """Convert records to HuggingFace Dataset format."""
+    """Convert records to HuggingFace Dataset format.
+
+    Works for both fast and slow tokenizers.
+    """
     from datasets import Dataset
+    from src.tokenization_utils import encode_tokens_with_labels
 
-    texts = [' '.join(r.tokens) for r in records]
-    encodings = tokenizer(
-        texts,
-        max_length=max_length,
-        padding='max_length',
-        truncation=True,
-        is_split_into_words=True,
-        return_tensors=None,
-    )
+    encoded_records = []
+    for rec in records:
+        enc = encode_tokens_with_labels(
+            tokenizer,
+            rec.tokens,
+            rec.bio_tags,
+            label2id,
+            max_length,
+        )
+        encoded_records.append(enc)
 
-    def align_labels(encoding, record):
-        word_ids = encoding.word_ids()
-        labels = []
-        for word_id in word_ids:
-            if word_id is None:
-                labels.append(-100)
-            elif word_id < len(record.bio_tags):
-                tag = record.bio_tags[word_id]
-                labels.append(label2id.get(tag, 0))
-            else:
-                labels.append(label2id.get('O', 0))
-        return {'labels': labels}
-
-    encodings['labels'] = [
-        align_labels({'word_ids': encodings['word_ids'][i]}, records[i])['labels']
-        for i in range(len(records))
-    ]
-
-    dataset = Dataset.from_dict({
-        'input_ids': encodings['input_ids'],
-        'attention_mask': encodings['attention_mask'],
-        'labels': [a['labels'] for a in [
-            align_labels({'word_ids': encodings['word_ids'][i]}, records[i])
-            for i in range(len(records))
-        ]],
+    return Dataset.from_dict({
+        'input_ids': [r["input_ids"] for r in encoded_records],
+        'attention_mask': [r["attention_mask"] for r in encoded_records],
+        'labels': [r["labels"] for r in encoded_records],
     })
-    return dataset
 
 
 def build_training_args(

@@ -519,6 +519,8 @@ def main():
         print(f"{'='*60}")
 
         tokenizer = AutoTokenizer.from_pretrained(model_config['model_name'])
+        print(f"  Tokenizer class: {tokenizer.__class__.__name__}")
+        print(f"  Tokenizer is_fast: {getattr(tokenizer, 'is_fast', False)}")
 
         print(f"  Tokenizing data...")
         max_len = config.get('max_length', 256)
