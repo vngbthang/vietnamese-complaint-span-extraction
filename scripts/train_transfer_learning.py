@@ -42,6 +42,7 @@ from transformers import (
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.data_utils import load_split, filter_by_source, BioRecord
 from src.metrics import bio_to_spans, save_error_analysis, save_predictions_jsonl
+from src.tokenization_utils import encode_tokens_with_labels, encode_tokens_with_labels_sanity_check
 
 # ---------------------------------------------------------------
 # Cleanup utilities
@@ -142,40 +143,27 @@ def load_config(path: str) -> Dict[str, Any]:
 # ---------------------------------------------------------------
 
 def prepare_dataset(records, tokenizer, label2id, max_length: int):
-    """Prepare HuggingFace Dataset from BioRecords."""
-    texts = [' '.join(r.tokens) for r in records]
-    dataset_dict = {'input_ids': [], 'attention_mask': [], 'labels': []}
+    """Prepare HuggingFace Dataset from BioRecords.
 
-    batch_size = 500
-    for batch_start in range(0, len(texts), batch_size):
-        batch_end = min(batch_start + batch_size, len(texts))
-        batch_texts = texts[batch_start:batch_end]
-        batch_enc = tokenizer(
-            batch_texts,
-            max_length=max_length,
-            padding='max_length',
-            truncation=True,
-            is_split_into_words=True,
-            return_tensors=None,
+    Uses encode_tokens_with_labels() which works for both fast and slow
+    tokenizers, avoiding direct .word_ids() calls.
+    """
+    encoded_records = []
+    for rec in records:
+        enc = encode_tokens_with_labels(
+            tokenizer,
+            rec.tokens,
+            rec.bio_tags,
+            label2id,
+            max_length,
         )
-        batch_wids = batch_enc.word_ids()
+        encoded_records.append(enc)
 
-        for i in range(len(batch_texts)):
-            word_ids = [batch_wids[j] for j in range(len(batch_enc['input_ids'][i]))]
-            rec = records[batch_start + i]
-            labels = []
-            for wid in word_ids:
-                if wid is None:
-                    labels.append(-100)
-                elif wid < len(rec.bio_tags):
-                    tag = rec.bio_tags[wid]
-                    labels.append(label2id.get(tag, 0))
-                else:
-                    labels.append(label2id.get('O', 0))
-            dataset_dict['input_ids'].append(batch_enc['input_ids'][i])
-            dataset_dict['attention_mask'].append(batch_enc['attention_mask'][i])
-            dataset_dict['labels'].append(labels)
-
+    dataset_dict = {
+        "input_ids": [r["input_ids"] for r in encoded_records],
+        "attention_mask": [r["attention_mask"] for r in encoded_records],
+        "labels": [r["labels"] for r in encoded_records],
+    }
     return Dataset.from_dict(dataset_dict)
 
 
@@ -345,6 +333,10 @@ def train_transfer(
     aux_id2label = {v: k for k, v in aux_label2id.items()}
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+    # Sanity check on first 3 aux records
+    encode_tokens_with_labels_sanity_check(
+        tokenizer, aux_train, aux_label2id, max_length, n_samples=3)
 
     # Split aux for validation
     n_aux = len(aux_records_all)
