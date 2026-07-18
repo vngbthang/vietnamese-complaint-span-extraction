@@ -1,0 +1,86 @@
+{
+  "label_set": [
+    "O",
+    "B-ASP",
+    "I-ASP"
+  ],
+  "task": "aspect_term_extraction",
+  "purpose": "auxiliary_span_pretraining",
+  "total_records": 17958,
+  "total_aspect_spans": 43614,
+  "total_tokens": 1349490,
+  "bio_label_distribution": {
+    "O": 896932,
+    "B-ASP": 43614,
+    "I-ASP": 408944
+  },
+  "bio_sum_equals_total_tokens": true,
+  "records_by_source": {
+    "uvisd4sa": 10892,
+    "causasent": 7066
+  },
+  "spans_by_source": {
+    "uvisd4sa": 33625,
+    "causasent": 9989
+  },
+  "splits": {
+    "train": {
+      "records": 13270,
+      "spans": 31568,
+      "tokens": 997828,
+      "bio_label_distribution": {
+        "O": 679634,
+        "B-ASP": 31568,
+        "I-ASP": 286626
+      },
+      "records_by_source": {
+        "uvisd4sa": 7623,
+        "causasent": 5647
+      },
+      "spans_by_source": {
+        "uvisd4sa": 23555,
+        "causasent": 8013
+      }
+    },
+    "valid": {
+      "records": 1785,
+      "spans": 4387,
+      "tokens": 132571,
+      "bio_label_distribution": {
+        "O": 87057,
+        "B-ASP": 4387,
+        "I-ASP": 41127
+      },
+      "records_by_source": {
+        "uvisd4sa": 1085,
+        "causasent": 700
+      },
+      "spans_by_source": {
+        "uvisd4sa": 3387,
+        "causasent": 1000
+      }
+    },
+    "test": {
+      "records": 2903,
+      "spans": 7659,
+      "tokens": 219091,
+      "bio_label_distribution": {
+        "O": 130241,
+        "B-ASP": 7659,
+        "I-ASP": 81191
+      },
+      "records_by_source": {
+        "uvisd4sa": 2184,
+        "causasent": 719
+      },
+      "spans_by_source": {
+        "uvisd4sa": 6683,
+        "causasent": 976
+      }
+    }
+  },
+  "cleaning_summary": {
+    "empty_span_removed": 59,
+    "invalid_span_removed": 59
+  }
+}

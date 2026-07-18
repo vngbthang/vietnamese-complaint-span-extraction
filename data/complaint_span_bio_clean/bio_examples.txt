@@ -1,0 +1,325 @@
+Step 4.1: Cleaned BIO Label Examples
+===============================================================================
+
+[1] ID: viocd_train_1  (split=train)
+    Text (74 tokens): mình góp ý thật nhé.. đừng bắt phải đăng nhập zalo nữa mình muốn tải nhạc mà không được lấy lại tôi không zalo thì gửi t...
+    BIO tags around first complaint span:
+      [  3] O        | "thật"
+      [  4] O        | "nhé.."
+      [  5] B-COMP   | "đừng" <<<
+      [  6] I-COMP   | "bắt" <<<
+      [  7] I-COMP   | "phải" <<<
+      [  8] I-COMP   | "đăng" <<<
+      [  9] I-COMP   | "nhập" <<<
+      [ 10] I-COMP   | "zalo" <<<
+    Spans: 5
+      chars[22:54] = "đừng bắt phải đăng nhập zalo nữa"
+      chars[55:99] = "mình muốn tải nhạc mà không được lấy lại tôi"
+      chars[100:176] = "không zalo thì gửi tin nhắn mất tiền được mã kích hoạt lại không chính xác.."
+      chars[200:219] = "họ khó chịu cả 10.."
+      chars[220:315] = "lập trình viên viết ra ứng dụng ngày càng dễ sử dụng đằng này càng ngày lại càng phức tạp và..."
+
+[2] ID: viocd_train_2  (split=train)
+    Text (46 tokens): máy khá đẹp,pin trâu vân tay nhạy nhận diện khuôn mặt nhanh nói chung ổn.tuy chơi game frE fire bị chậm khung hình không...
+    BIO tags around first complaint span:
+      [ 17] O        | "frE"
+      [ 18] O        | "fire"
+      [ 19] B-COMP   | "bị" <<<
+      [ 20] I-COMP   | "chậm" <<<
+      [ 21] I-COMP   | "khung" <<<
+      [ 22] I-COMP   | "hình" <<<
+      [ 23] I-COMP   | "không" <<<
+      [ 24] I-COMP   | "mượt" <<<
+    Spans: 1
+      chars[96:129] = "bị chậm khung hình không mượt lắm"
+
+[3] ID: viocd_train_3  (split=train)
+    Text (35 tokens): một mớ lỗi: không xem lại được bài test, không hiện link( ví dụ như là youtube khi chia sẻ) không copy được từ không biế...
+    BIO tags around first complaint span:
+      [  0] B-COMP   | "một" <<<
+      [  1] I-COMP   | "mớ" <<<
+      [  2] I-COMP   | "lỗi:" <<<
+      [  3] B-COMP   | "không" <<<
+      [  4] I-COMP   | "xem" <<<
+      [  5] I-COMP   | "lại" <<<
+    Spans: 5
+      chars[0:11] = "một mớ lỗi:"
+      chars[12:30] = "không xem lại được"
+      chars[41:57] = "không hiện link("
+      chars[92:110] = "không copy được từ"
+      chars[111:130] = "không biết để dịch."
+
+[4] ID: viocd_train_10  (split=train)
+    Text (80 tokens): tôi cập nhật lại aP hack não này từ hôm qua lúc tôi làm đã đến unit 40 nhưng lúc cập nhật về mở ra thì nó lại trở về uni...
+    BIO tags around first complaint span:
+      [ 16] O        | "unit"
+      [ 17] O        | "40"
+      [ 18] B-COMP   | "nhưng" <<<
+      [ 19] I-COMP   | "lúc" <<<
+      [ 20] I-COMP   | "cập" <<<
+      [ 21] I-COMP   | "nhật" <<<
+      [ 22] I-COMP   | "về" <<<
+      [ 23] I-COMP   | "mở" <<<
+    Spans: 2
+      chars[71:105] = "nhưng lúc cập nhật về mở ra thì nó"
+      chars[216:268] = "1star   cho đến khi nào aP trở về trạng thái ban đầu"
+
+[5] ID: viocd_train_13  (split=train)
+    Text (76 tokens): chào tiki, bạn giao thiếu hàng của tôi, thậm chí là cả giấy biL dán lên kiện cũng chỉ ghi một món thôi mà vẫn đề thu giá...
+    BIO tags around first complaint span:
+      [  1] O        | "tiki,"
+      [  2] O        | "bạn"
+      [  3] B-COMP   | "giao" <<<
+      [  4] I-COMP   | "thiếu" <<<
+      [  5] I-COMP   | "hàng" <<<
+      [  6] I-COMP   | "của" <<<
+      [  7] I-COMP   | "tôi," <<<
+      [  8] O        | "thậm"
+    Spans: 3
+      chars[15:39] = "giao thiếu hàng của tôi,"
+      chars[106:136] = "vẫn đề thu giá tiền 2 món sao."
+      chars[217:275] = "sau khi mở ra và phát hiện lỗi này thì mình rất thất vọng,"
+
+[6] ID: viocd_train_14  (split=train)
+    Text (44 tokens): giao đủ sản phẩm... mong là lần sau  cửa hàng  giao hàng nên gói sản phẩm vào bọc nhựa chống xóc... cứ để không lông tro...
+    BIO tags around first complaint span:
+      [  0] B-COMP   | "giao" <<<
+      [  1] I-COMP   | "đủ" <<<
+      [  2] I-COMP   | "sản" <<<
+      [  3] O        | "phẩm..."
+      [  4] O        | "mong"
+      [  5] O        | "là"
+    Spans: 3
+      chars[0:11] = "giao đủ sản"
+      chars[100:134] = "cứ để không lông trong hộp như vậy"
+      chars[138:182] = "cái hộp đựng thì không gian chứa quá rộng..."
+
+[7] ID: viocd_train_16  (split=train)
+    Text (72 tokens): mới dùng 2 ngày chưa thấy hiệu  quả  lắm.  được  cái nhìn da min và láng hơn. tinh chất thấm nhanh và không gây dầu nữa....
+    BIO tags around first complaint span:
+      [ 24] O        | "dầu"
+      [ 25] O        | "nữa."
+      [ 26] B-COMP   | "mỗi" <<<
+      [ 27] I-COMP   | "tội" <<<
+      [ 28] I-COMP   | "lazada" <<<
+      [ 29] I-COMP   | "vận" <<<
+      [ 30] I-COMP   | "chuyển" <<<
+      [ 31] I-COMP   | "hàng" <<<
+    Spans: 1
+      chars[121:159] = "mỗi tội lazada vận chuyển hàng tẹ quá,"
+
+[8] ID: viocd_train_19  (split=train)
+    Text (71 tokens): em có một tài khoản lần đầu em bị mất xim nên em đã thêm số điện thoại mới. thế mà mới vừa rồi em đổi mật khẩu quên khuấ...
+    BIO tags around first complaint span:
+      [  6] O        | "đầu"
+      [  7] O        | "em"
+      [  8] B-COMP   | "bị" <<<
+      [  9] I-COMP   | "mất" <<<
+      [ 10] I-COMP   | "xim" <<<
+      [ 11] O        | "nên"
+      [ 12] O        | "em"
+      [ 13] O        | "đã"
+    Spans: 3
+      chars[31:41] = "bị mất xim"
+      chars[98:126] = "đổi mật khẩu quên khuấy mất."
+      chars[166:207] = "nó cứ đòi gửi mã về số điện thoại cũ kia."
+
+[9] ID: viocd_train_20  (split=train)
+    Text (72 tokens): game khá hay, nhưng hơi mất cân bằng giữa các phái. cần giảm sức mạnh của phái người thú đặc biệt là brutus xem bảng xếp...
+    BIO tags around first complaint span:
+      [  2] O        | "hay,"
+      [  3] O        | "nhưng"
+      [  4] B-COMP   | "hơi" <<<
+      [  5] I-COMP   | "mất" <<<
+      [  6] I-COMP   | "cân" <<<
+      [  7] I-COMP   | "bằng" <<<
+      [  8] I-COMP   | "giữa" <<<
+      [  9] I-COMP   | "các" <<<
+    Spans: 4
+      chars[20:51] = "hơi mất cân bằng giữa các phái."
+      chars[52:164] = "cần giảm sức mạnh của phái người thú đặc biệt là brutus xem bảng xếp hạng toàn thấy đội người thú thôi chán lắm."
+      chars[165:198] = "tỉ lệ ra tướng tím cũng khá thấp."
+      chars[215:270] = "màn chơi hơi đuối nên lâu lắm mới qua được một màn boS."
+
+[10] ID: viocd_train_22  (split=train)
+    Text (56 tokens): cập nhật không gì vào game không  được , load 79% đứng hình luôn. một sai lầm của các game là đưa thêm nhiều tính năng, ...
+    BIO tags around first complaint span:
+      [  0] B-COMP   | "cập" <<<
+      [  1] I-COMP   | "nhật" <<<
+      [  2] I-COMP   | "không" <<<
+      [  3] I-COMP   | "gì" <<<
+      [  4] I-COMP   | "vào" <<<
+      [  5] I-COMP   | "game" <<<
+    Spans: 4
+      chars[0:38] = "cập nhật không gì vào game không  được"
+      chars[41:65] = "load 79% đứng hình luôn."
+      chars[66:148] = "một sai lầm của các game là đưa thêm nhiều tính năng, cập nhật, làm máy nặng, lag."
+      chars[160:262] = "phải hoàn thành nhiều nhiệm vụ, mà số không ít người chơi không có thời gian, đâm ra nản rồi xoá game."
+
+[11] ID: viocd_train_30  (split=train)
+    Text (72 tokens): chậm cập nhật. game giật lag rất nhiều rất với các bản khác. gặp hack nhiều thêm cái nữa là hay bị đá ra khi đang bắn. g...
+    BIO tags around first complaint span:
+      [  0] B-COMP   | "chậm" <<<
+      [  1] I-COMP   | "cập" <<<
+      [  2] I-COMP   | "nhật." <<<
+      [  3] O        | "game"
+      [  4] B-COMP   | "giật" <<<
+      [  5] I-COMP   | "lag" <<<
+    Spans: 7
+      chars[0:14] = "chậm cập nhật."
+      chars[20:38] = "giật lag rất nhiều"
+      chars[61:75] = "gặp hack nhiều"
+      chars[92:118] = "hay bị đá ra khi đang bắn."
+      chars[119:140] = "gặp vấn đề quá rõ rệt"
+      chars[173:190] = "chậm cập nhập quá"
+      chars[264:278] = "vẫn im re vậy."
+
+[12] ID: viocd_train_37  (split=train)
+    Text (80 tokens): game hay nhưng lại yêu cầu nâng cấp môn khách với ải và các hài nhi khó khăn nâng cấp khi không còn tiền ải thì eo có co...
+    BIO tags around first complaint span:
+      [  2] O        | "nhưng"
+      [  3] O        | "lại"
+      [  4] B-COMP   | "yêu" <<<
+      [  5] I-COMP   | "cầu" <<<
+      [  6] I-COMP   | "nâng" <<<
+      [  7] I-COMP   | "cấp" <<<
+      [  8] O        | "môn"
+      [  9] O        | "khách"
+    Spans: 5
+      chars[19:35] = "yêu cầu nâng cấp"
+      chars[77:111] = "nâng cấp khi không còn tiền ải thì"
+      chars[112:209] = "eo có con lính nuôi con mà đợi lâu quá trời hoạt đan thì chỉ có mấy cái tính cắt cổ người khác à!"
+      chars[210:250] = "game thì chán mà lại như thế thì dẹp đi."
+      chars[263:300] = "đồ hoạ thăm hỏi với con cái không đẹp"
+
+[13] ID: viocd_train_39  (split=train)
+    Text (31 tokens): mình đặt là loại chai xịt như này nhưng hàng nhận lại là chai đóng nắp. và không có quà tặng kèm như khuyến mãi. mong ch...
+    BIO tags around first complaint span:
+      [  7] O        | "này"
+      [  8] O        | "nhưng"
+      [  9] B-COMP   | "hàng" <<<
+      [ 10] I-COMP   | "nhận" <<<
+      [ 11] I-COMP   | "lại" <<<
+      [ 12] I-COMP   | "là" <<<
+      [ 13] I-COMP   | "chai" <<<
+      [ 14] I-COMP   | "đóng" <<<
+    Spans: 2
+      chars[40:71] = "hàng nhận lại là chai đóng nắp."
+      chars[75:112] = "không có quà tặng kèm như khuyến mãi."
+
+[14] ID: viocd_train_43  (split=train)
+    Text (73 tokens): càng ngày càng tệ, từ khi không cho kiểm tra hàng trước, luôn là sản phẩm kém chất lượng, áo quần mua về không bằng miến...
+    BIO tags around first complaint span:
+      [  0] B-COMP   | "càng" <<<
+      [  1] I-COMP   | "ngày" <<<
+      [  2] I-COMP   | "càng" <<<
+      [  3] O        | "tệ,"
+      [  4] O        | "từ"
+      [  5] O        | "khi"
+    Spans: 6
+      chars[0:14] = "càng ngày càng"
+      chars[65:89] = "sản phẩm kém chất lượng,"
+      chars[105:131] = "không bằng miếng dẽ lâu..."
+      chars[190:227] = "nhưng khi giải quyết thì âu ơ ví dầu,"
+      chars[228:265] = "đổi đi đổi lại 3 tháng vẫn chưa xong,"
+      chars[266:303] = "kêu trả tiền lại thì không chịu tr..."
+
+[15] ID: viocd_train_44  (split=train)
+    Text (72 tokens): game có quá nhiều thành phần không tốt, như những người lớn tuổi hay nhỏ tuổi đều có những thành vi không tốt, ăn nói kh...
+    BIO tags around first complaint span:
+      [  0] O        | "game"
+      [  1] O        | "có"
+      [  2] B-COMP   | "quá" <<<
+      [  3] I-COMP   | "nhiều" <<<
+      [  4] I-COMP   | "thành" <<<
+      [  5] I-COMP   | "phần" <<<
+      [  6] I-COMP   | "không" <<<
+      [  7] I-COMP   | "tốt," <<<
+    Spans: 6
+      chars[8:39] = "quá nhiều thành phần không tốt,"
+      chars[91:110] = "thành vi không tốt,"
+      chars[111:152] = "ăn nói không có đạo đức, và rất chửa tục,"
+      chars[182:219] = "khoá aC nếu 3 phiếu tố cao nhiều lần,"
+      chars[225:237] = "nhiều tố cáo"
+      chars[272:287] = "nghiêm khắc hơn"
+
+[16] ID: viocd_train_46  (split=train)
+    Text (57 tokens): ứng dụng phiên bản về sau tệ quá. bắt cập nhật dữ liệu oFline suốt. đề nghị bỏ cập nhật dữ liệu oFline đi. lúc cần gấp m...
+    BIO tags around first complaint span:
+      [  4] O        | "về"
+      [  5] O        | "sau"
+      [  6] B-COMP   | "tệ" <<<
+      [  7] I-COMP   | "quá." <<<
+      [  8] B-COMP   | "bắt" <<<
+      [  9] I-COMP   | "cập" <<<
+      [ 10] I-COMP   | "nhật" <<<
+      [ 11] I-COMP   | "dữ" <<<
+    Spans: 6
+      chars[26:33] = "tệ quá."
+      chars[34:67] = "bắt cập nhật dữ liệu oFline suốt."
+      chars[140:153] = "coi như hỏng."
+      chars[154:176] = "có ứng dụng như không."
+      chars[177:242] = "phải chạy ra chỗ có wifi hay internet để cập nhật dữ liệu oFline."
+      chars[243:257] = "phiền phức quá"
+
+[17] ID: viocd_train_50  (split=train)
+    Text (33 tokens): trên  quả người cáo có quà tặng, mà giao hàng không có. không hài lòng chút nào .dù là quà không không dùng được cũng ph...
+    BIO tags around first complaint span:
+      [  5] O        | "quà"
+      [  6] O        | "tặng,"
+      [  7] B-COMP   | "mà" <<<
+      [  8] I-COMP   | "giao" <<<
+      [  9] I-COMP   | "hàng" <<<
+      [ 10] I-COMP   | "không" <<<
+      [ 11] I-COMP   | "có." <<<
+      [ 12] B-COMP   | "không" <<<
+    Spans: 2
+      chars[33:55] = "mà giao hàng không có."
+      chars[56:83] = "không hài lòng chút nào .dù"
+
+[18] ID: viocd_train_51  (split=train)
+    Text (58 tokens): không hiểu nổi. ứng dụng 4, 5star   nhưng có thể tự huỷ đơn hàng của người mua với lỗi lưu kho, quăng cho một mã giảm gi...
+    BIO tags around first complaint span:
+      [  6] O        | "5star"
+      [  7] O        | "nhưng"
+      [  8] B-COMP   | "có" <<<
+      [  9] I-COMP   | "thể" <<<
+      [ 10] I-COMP   | "tự" <<<
+      [ 11] I-COMP   | "huỷ" <<<
+      [ 12] I-COMP   | "đơn" <<<
+      [ 13] I-COMP   | "hàng" <<<
+    Spans: 4
+      chars[42:82] = "có thể tự huỷ đơn hàng của người mua với"
+      chars[83:148] = "lỗi lưu kho, quăng cho một mã giảm giá 5% và lời xin lỗi tự động."
+      chars[215:240] = "không tin tưởng được nữa."
+      chars[241:264] = "mất thời gian của nhau."
+
+[19] ID: viocd_train_53  (split=train)
+    Text (73 tokens): tôi rất thích game này nhưng càng lúc cấu hình game càng nặng, thật sự rất lag luôn, máy bên tôi lúc nào cũng trễ hơn bê...
+    BIO tags around first complaint span:
+      [  4] O        | "này"
+      [  5] O        | "nhưng"
+      [  6] B-COMP   | "càng" <<<
+      [  7] I-COMP   | "lúc" <<<
+      [  8] I-COMP   | "cấu" <<<
+      [  9] I-COMP   | "hình" <<<
+      [ 10] I-COMP   | "game" <<<
+      [ 11] I-COMP   | "càng" <<<
+    Spans: 2
+      chars[29:84] = "càng lúc cấu hình game càng nặng, thật sự rất lag luôn,"
+      chars[85:209] = "máy bên tôi lúc nào cũng trễ hơn bên đồng đội vài giây, có khi còn bị đứng hình hay cứ bị chạy giật lùi do kết nối mạng nữa."
+
+[20] ID: viocd_train_54  (split=train)
+    Text (18 tokens): nói là  được  tặng khi mua hoá đơn 486k trở lên mà không thấy có gì.rất thất vọng.
+    BIO tags around first complaint span:
+      [ 10] O        | "lên"
+      [ 11] O        | "mà"
+      [ 12] B-COMP   | "không" <<<
+      [ 13] I-COMP   | "thấy" <<<
+      [ 14] I-COMP   | "có" <<<
+      [ 15] I-COMP   | "gì.rất" <<<
+      [ 16] I-COMP   | "thất" <<<
+      [ 17] I-COMP   | "vọng." <<<
+    Spans: 1
+      chars[51:82] = "không thấy có gì.rất thất vọng."
+

@@ -1,0 +1,95 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# C extensions
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Model checkpoints and weights — NEVER save
+checkpoint-*/
+**/checkpoint-*/
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+*.h5
+*.pkl
+*.joblib
+pytorch_model.bin
+pytorch_model/
+model.safetensors
+model.safetensors.index.json
+optimizer.pt
+optimizer state/
+scheduler.pt
+rng_state.pth
+training_args.bin
+trainer_state.json
+scheduler_state.json
+blobs/
+storage/
+
+# Training outputs — keep structure, ignore experiment results
+outputs/experiments/
+outputs/checkpoints/
+
+# Experiment tracking
+wandb/
+wandb*/
+runs/
+tensorboard/
+*.tfevents*
+mlruns/
+
+# Misc caches
+.cache/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.tox/
+.coverage
+coverage.xml
+*.cover
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Do NOT ignore data files
+# data/complaint_span_bio_clean/
+# data/auxiliary_ate_bio_clean/
+# configs/
+# scripts/
+# src/

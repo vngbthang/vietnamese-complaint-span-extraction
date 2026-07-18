@@ -1,0 +1,146 @@
+Step 5A: Auxiliary ATE BIO Examples
+===============================================================================
+
+[1] ID: uvisd4sa_train_1  (source=uvisd4sa, split=train)
+    Text (88 tokens): Pin Sài tầm 50h cho pin 100/100. Camera ổn ... tất cả đều OK ... nhân viên thế giới di động trần văn thời cà mau nhiệt t...
+    BIO around first aspect span:
+      [  0] B-ASP   | "Pin" <<<
+      [  1] I-ASP   | " " <<<
+      [  2] I-ASP   | "Sài" <<<
+      [  3] I-ASP   | " " <<<
+      [  4] I-ASP   | "tầm" <<<
+      [  5] I-ASP   | " " <<<
+    Spans: 4
+      [0:28] = "Pin Sài tầm 50h cho pin 100/"
+      [28:39] = "100. Camera"
+      [47:60] = "tất cả đều OK"
+      ... and 1 more
+
+[2] ID: uvisd4sa_train_2  (source=uvisd4sa, split=train)
+    Text (69 tokens): Lag và hao pin là cái tóm tắt về máy. Sam làm tệ quá, không bằng mấy con tàu cùng phân khúc
+    BIO around first aspect span:
+      [  0] B-ASP   | "Lag" <<<
+      [  1] O       | " "
+      [  2] O       | "va"
+      [  3] O       | "̀"
+      [  4] B-ASP   | " " <<<
+      [  5] I-ASP   | "hao" <<<
+    Spans: 3
+      [0:3] = "Lag"
+      [7:15] = " hao pin"
+      [45:106] = "Sam làm tệ quá, không bằng mấy con tàu cùng phân khúc"
+
+[3] ID: uvisd4sa_train_3  (source=uvisd4sa, split=train)
+    Text (77 tokens): Tất cả đều ổn ngoại trừ lúc máy nóng lên thì pin tụt nhanh hơn tụt quần haizz. Cam chụp cũng gọi là tầm trung. Nếu dùng ...
+    BIO around first aspect span:
+      [ 12] O       | "lúc"
+      [ 13] O       | " "
+      [ 14] B-ASP   | "máy" <<<
+      [ 15] I-ASP   | " " <<<
+      [ 16] I-ASP   | "nóng" <<<
+      [ 17] I-ASP   | " " <<<
+      [ 18] I-ASP   | "lên" <<<
+      [ 19] I-ASP   | " " <<<
+    Spans: 3
+      [28:71] = "máy nóng lên thì pin tụt nhanh hơn tụt quần"
+      [71:87] = " haizz. Cam chụp"
+      [111:169] = "Nếu dùng lướt web bình thường thì có thể dùng được cả ngày"
+
+[4] ID: uvisd4sa_train_4  (source=uvisd4sa, split=train)
+    Text (103 tokens): Ok mua máy ở TGDD chính sách đổi trả rất tốt,rất yên tâm khi mua ở TGDD,quản lý ở 15A đường bà hôm phường 13 quận 6 nhẹ ...
+    BIO around first aspect span:
+      [  6] O       | "ở"
+      [  7] O       | " "
+      [  8] B-ASP   | "TGDD" <<<
+      [  9] I-ASP   | " " <<<
+      [ 10] I-ASP   | "chính" <<<
+      [ 11] I-ASP   | " " <<<
+      [ 12] I-ASP   | "sách" <<<
+      [ 13] I-ASP   | " " <<<
+    Spans: 1
+      [13:172] = "TGDD chính sách đổi trả rất tốt,rất yên tâm khi mua ở TGDD,quản lý ở 15A đường bà hôm phường 13 quận 6 nhẹ nhàng và vui tính,nhiên viên ai cũng nhiệt tình, hài"
+
+[5] ID: uvisd4sa_train_5  (source=uvisd4sa, split=train)
+    Text (35 tokens): kiểu dáng thì đẹp,cầm chắc tay,nhưng loa nhỏ quá,nhân viên phục vụ rất nhiệt tình
+    BIO around first aspect span:
+      [  0] B-ASP   | "kiểu" <<<
+      [  1] I-ASP   | " " <<<
+      [  2] I-ASP   | "dáng" <<<
+      [  3] I-ASP   | " " <<<
+      [  4] I-ASP   | "thì" <<<
+      [  5] I-ASP   | " " <<<
+    Spans: 3
+      [0:21] = "kiểu dáng thì đẹp,cầm"
+      [26:36] = " tay,nhưng"
+      [37:63] = "loa nhỏ quá,nhân viên phục"
+
+[6] ID: uvisd4sa_train_6  (source=uvisd4sa, split=train)
+    Text (119 tokens): Máy loa to ,bin trâu game lp tuy chỉ bựt đc fqf30 nhưng chơi game như bựt 60fqs ko bị mỏi mắt ngon hơn joy 3 chơi nhìn n...
+    BIO around first aspect span:
+      [  0] B-ASP   | "Máy" <<<
+      [  1] I-ASP   | " " <<<
+      [  2] I-ASP   | "loa" <<<
+      [  3] I-ASP   | " " <<<
+      [  4] I-ASP   | "to" <<<
+      [  5] O       | " "
+    Spans: 3
+      [0:10] = "Máy loa to"
+      [12:20] = "bin trâu"
+      [20:127] = " game lp tuy chỉ bựt đc fqf30 nhưng chơi game như bựt 60fqs ko bị mỏi mắt ngon hơn joy 3 chơi nhìn như kiểu"
+
+[7] ID: uvisd4sa_train_7  (source=uvisd4sa, split=train)
+    Text (42 tokens): Hài lòng về sản phẩm. Mọi thứ đêu rât tốt nghe nhạc xem phim chơi game âm thanh to và hay
+    BIO around first aspect span:
+      [  0] B-ASP   | "Hài" <<<
+      [  1] I-ASP   | " " <<<
+      [  2] I-ASP   | "lòng" <<<
+      [  3] I-ASP   | " " <<<
+      [  4] I-ASP   | "về" <<<
+      [  5] I-ASP   | " " <<<
+    Spans: 2
+      [0:29] = "Hài lòng về sản phẩm. Mọi thứ"
+      [30:70] = "đêu rât tốt nghe nhạc xem phim chơi game"
+
+[8] ID: uvisd4sa_train_8  (source=uvisd4sa, split=train)
+    Text (105 tokens): Mua được 1 tuần thấy máy quá OKPin trâu , máy mượt , cảm biến vân tay nhạy , k nóng máy . Nhu cầu chơi game nên k cần gì...
+    BIO around first aspect span:
+      [  8] O       | "thấy"
+      [  9] O       | " "
+      [ 10] B-ASP   | "máy" <<<
+      [ 11] I-ASP   | " " <<<
+      [ 12] I-ASP   | "quá" <<<
+      [ 13] I-ASP   | " " <<<
+      [ 14] I-ASP   | "OKPin" <<<
+      [ 15] B-ASP   | " " <<<
+    Spans: 5
+      [21:34] = "máy quá OKPin"
+      [34:39] = " trâu"
+      [42:57] = "máy mượt , cảm "
+      ... and 2 more
+
+[9] ID: uvisd4sa_train_9  (source=uvisd4sa, split=train)
+    Text (9 tokens): Máy mượt . pin trâu
+    BIO around first aspect span:
+      [  0] B-ASP   | "Máy" <<<
+      [  1] I-ASP   | " " <<<
+      [  2] I-ASP   | "mượt" <<<
+      [  3] B-ASP   | " " <<<
+      [  4] I-ASP   | "." <<<
+      [  5] I-ASP   | " " <<<
+    Spans: 2
+      [0:8] = "Máy mượt"
+      [8:15] = " . pin "
+
+[10] ID: uvisd4sa_train_10  (source=uvisd4sa, split=train)
+    Text (51 tokens): Gía này thì quá ổn so với cấu hình ! Gía rẻ như này các bạn còn có thể đòi hỏi thêm những gì nữa ?
+    BIO around first aspect span:
+      [  0] B-ASP   | "Gía" <<<
+      [  1] I-ASP   | " " <<<
+      [  2] I-ASP   | "này" <<<
+      [  3] I-ASP   | " " <<<
+      [  4] I-ASP   | "thì" <<<
+      [  5] I-ASP   | " " <<<
+    Spans: 2
+      [0:18] = "Gía này thì quá ổn"
+      [37:51] = "Gía rẻ như này"
+

@@ -1,0 +1,13 @@
+split,tag,count,percentage
+train,O,679634,68.11%
+train,B-ASP,31568,3.16%
+train,I-ASP,286626,28.72%
+valid,O,87057,65.67%
+valid,B-ASP,4387,3.31%
+valid,I-ASP,41127,31.02%
+test,O,130241,59.45%
+test,B-ASP,7659,3.50%
+test,I-ASP,81191,37.06%
+ALL,O,896932,66.46%
+ALL,B-ASP,43614,3.23%
+ALL,I-ASP,408944,30.30%

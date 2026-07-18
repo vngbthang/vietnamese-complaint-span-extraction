@@ -1,0 +1,13 @@
+split,tag,count,percentage
+train,O,93031,73.70%
+train,B-COMP,4141,3.28%
+train,I-COMP,29055,23.02%
+valid,O,11398,70.70%
+valid,B-COMP,583,3.62%
+valid,I-COMP,4141,25.69%
+test,O,11661,72.81%
+test,B-COMP,513,3.20%
+test,I-COMP,3841,23.98%
+ALL,O,116090,73.31%
+ALL,B-COMP,5237,3.31%
+ALL,I-COMP,37037,23.39%

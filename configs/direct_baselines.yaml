@@ -1,0 +1,77 @@
+# Direct Baselines Config
+# NOTE: No model checkpoints are saved. Only metrics, predictions, and reports.
+
+data_dir: data/complaint_span_bio_clean
+output_dir: outputs/experiments/direct_baselines
+max_length: 256
+train_batch_size: 16
+eval_batch_size: 16
+gradient_accumulation_steps: 1
+learning_rate: 2e-5
+num_train_epochs: 5
+weight_decay: 0.01
+warmup_ratio: 0.06
+seed: 42
+fp16: true
+
+# Checkpoint saving is DISABLED — metrics only
+save_strategy: "no"
+save_total_limit: 0
+load_best_model_at_end: false
+save_model: false
+save_checkpoints: false
+keep_checkpoints: false
+cleanup_checkpoints: true
+
+# Evaluation per epoch
+evaluation_strategy: "epoch"
+logging_steps: 50
+
+models:
+  phobert_ce:
+    model_name: vinai/phobert-base-v2
+    loss: ce
+    id2label:
+      0: "O"
+      1: "B-COMP"
+      2: "I-COMP"
+    label2id:
+      O: 0
+      B-COMP: 1
+      I-COMP: 2
+
+  phobert_weighted_ce:
+    model_name: vinai/phobert-base-v2
+    loss: weighted_ce
+    id2label:
+      0: "O"
+      1: "B-COMP"
+      2: "I-COMP"
+    label2id:
+      O: 0
+      B-COMP: 1
+      I-COMP: 2
+
+  xlm_roberta_ce:
+    model_name: xlm-roberta-base
+    loss: ce
+    id2label:
+      0: "O"
+      1: "B-COMP"
+      2: "I-COMP"
+    label2id:
+      O: 0
+      B-COMP: 1
+      I-COMP: 2
+
+  mbert_ce:
+    model_name: bert-base-multilingual-cased
+    loss: ce
+    id2label:
+      0: "O"
+      1: "B-COMP"
+      2: "I-COMP"
+    label2id:
+      O: 0
+      B-COMP: 1
+      I-COMP: 2
