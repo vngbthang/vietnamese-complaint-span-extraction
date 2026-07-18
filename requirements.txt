@@ -1,27 +1,19 @@
-# PyTorch & Transformers
-torch>=2.0.0
-transformers>=4.30.0
-
-# Data handling
-datasets>=2.14.0
-pandas>=2.0.0
-numpy>=1.24.0
-scikit-learn>=1.3.0
-
-# Training utilities
-accelerate>=0.20.0
-evaluate>=0.4.0
-seqeval>=0.0.19
-tqdm>=4.65.0
-
-# Config & logging
-pyyaml>=6.0
-tensorboard>=2.14.0
+# Core ML
+torch
+transformers
+datasets
+accelerate
+scikit-learn
+pandas
+numpy
+tqdm
+pyyaml
+matplotlib
 
 # Tokenizers & model files
-sentencepiece>=0.1.99
-protobuf>=3.20.0
-safetensors>=0.3.0
+sentencepiece
+protobuf
+safetensors
 
 # Utilities
-requests>=2.31.0
+requests

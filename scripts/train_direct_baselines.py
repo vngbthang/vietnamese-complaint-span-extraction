@@ -24,10 +24,6 @@ import numpy as np
 import torch
 import yaml
 from datasets import Dataset
-from seqeval.metrics import classification_report as seqeval_report
-from seqeval.metrics import f1_score as seqeval_f1
-from seqeval.metrics import precision_score as seqeval_precision
-from seqeval.metrics import recall_score as seqeval_recall
 from torch.utils.data import DataLoader
 from transformers import (
     AutoConfig,
@@ -35,13 +31,22 @@ from transformers import (
     AutoTokenizer,
     DataCollatorForTokenClassification,
     Trainer,
-    TrainingArguments,
 )
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.data_utils import load_split
-from src.metrics import bio_to_spans, save_error_analysis, save_per_label_report, save_predictions_jsonl
+from src.metrics import (
+    bio_to_spans,
+    save_error_analysis,
+    save_per_label_report,
+    save_predictions_jsonl,
+    seqeval_f1,
+    seqeval_precision,
+    seqeval_recall,
+    seqeval_report,
+)
 from src.tokenization_utils import encode_tokens_with_labels, encode_tokens_with_labels_sanity_check
+from src.trainer_utils import make_training_args
 
 LABEL_SET = ['O', 'B-COMP', 'I-COMP']
 
@@ -287,7 +292,7 @@ def train_model(
 
     epochs = 1 if smoke_test else config.get('num_train_epochs', 5)
 
-    training_args = TrainingArguments(
+    training_args = make_training_args(
         output_dir=run_dir,
         num_train_epochs=epochs,
         per_device_train_batch_size=(
@@ -303,7 +308,6 @@ def train_model(
         save_strategy='no',
         save_total_limit=0,
         load_best_model_at_end=False,
-        save_safetensors=False,
         # -------------------------------
         logging_dir=os.path.join(run_dir, 'logs'),
         logging_steps=config.get('logging_steps', 50),
@@ -377,8 +381,7 @@ def train_model(
     token_acc = sum(1 for a, b in zip(flat_true, flat_pred) if a == b) / len(flat_true) if flat_true else 0.0
 
     # Weighted token F1
-    from seqeval.metrics import f1_score as seq_w_f1
-    token_f1_w = seq_w_f1(true_tags_all, pred_tags_all, average='weighted')
+    token_f1_w = seqeval_f1(true_tags_all, pred_tags_all, average='weighted')
 
     # Span-level
     all_gt_spans, all_pred_spans = [], []

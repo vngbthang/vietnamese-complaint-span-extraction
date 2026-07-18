@@ -25,10 +25,6 @@ import numpy as np
 import torch
 import yaml
 from datasets import Dataset
-from seqeval.metrics import classification_report as seqeval_report
-from seqeval.metrics import f1_score as seqeval_f1
-from seqeval.metrics import precision_score as seqeval_precision
-from seqeval.metrics import recall_score as seqeval_recall
 from transformers import (
     AutoConfig,
     AutoModel,
@@ -36,13 +32,21 @@ from transformers import (
     AutoTokenizer,
     DataCollatorForTokenClassification,
     Trainer,
-    TrainingArguments,
 )
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.data_utils import load_split, filter_by_source, BioRecord
-from src.metrics import bio_to_spans, save_error_analysis, save_predictions_jsonl
+from src.metrics import (
+    bio_to_spans,
+    save_error_analysis,
+    save_predictions_jsonl,
+    seqeval_f1,
+    seqeval_precision,
+    seqeval_recall,
+    seqeval_report,
+)
 from src.tokenization_utils import encode_tokens_with_labels, encode_tokens_with_labels_sanity_check
+from src.trainer_utils import make_training_args
 
 # ---------------------------------------------------------------
 # Cleanup utilities
@@ -352,7 +356,7 @@ def train_transfer(
 
     aux_epochs = 1 if smoke_test else config.get('aux_epochs', 3)
 
-    aux_args = TrainingArguments(
+    aux_args = make_training_args(
         output_dir=os.path.join(run_dir, 'phase1_aux'),
         num_train_epochs=aux_epochs,
         per_device_train_batch_size=(4 if smoke_test
@@ -365,7 +369,6 @@ def train_transfer(
         save_strategy='no',
         save_total_limit=0,
         load_best_model_at_end=False,
-        save_safetensors=False,
         logging_dir=os.path.join(run_dir, 'phase1_aux', 'logs'),
         logging_steps=20,
         eval_strategy='epoch' if not smoke_test else 'no',
@@ -449,7 +452,7 @@ def train_transfer(
     target_dir = os.path.join(run_dir, 'phase2_target')
     os.makedirs(target_dir, exist_ok=True)
 
-    target_args = TrainingArguments(
+    target_args = make_training_args(
         output_dir=target_dir,
         num_train_epochs=target_epochs,
         per_device_train_batch_size=(4 if smoke_test
@@ -462,7 +465,6 @@ def train_transfer(
         save_strategy='no',
         save_total_limit=0,
         load_best_model_at_end=False,
-        save_safetensors=False,
         logging_dir=os.path.join(target_dir, 'logs'),
         logging_steps=20,
         eval_strategy='epoch' if not smoke_test else 'no',

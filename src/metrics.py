@@ -7,10 +7,6 @@ from typing import Dict, List, Tuple, Any, Optional
 
 import numpy as np
 import torch
-from seqeval.metrics import classification_report as seqeval_report
-from seqeval.metrics import f1_score as seqeval_f1
-from seqeval.metrics import precision_score as seqeval_precision
-from seqeval.metrics import recall_score as seqeval_recall
 from sklearn.metrics import (
     accuracy_score,
     classification_report as sklearn_report,
@@ -18,6 +14,97 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
 )
+
+
+# ---------------------------------------------------------------
+# seqeval fallbacks — avoid hard dependency on seqeval package
+# ---------------------------------------------------------------
+
+def _get_seqeval_functions():
+    """
+    Lazy-load seqeval if available. Return (precision, recall, f1, classification_report).
+    Falls back to manual sklearn-based implementations.
+    """
+    try:
+        from seqeval.metrics import (
+            classification_report as seqeval_report,
+            f1_score as seqeval_f1,
+            precision_score as seqeval_precision,
+            recall_score as seqeval_recall,
+        )
+        return seqeval_precision, seqeval_recall, seqeval_f1, seqeval_report
+    except (ImportError, OSError):
+        pass
+
+    def _seqeval_precision(y_true, y_pred, **kwargs):
+        labels = kwargs.get('labels', None)
+        average = kwargs.get('average', 'micro')
+        tp = fp = fn = 0
+        all_labels = set()
+        for seq_t, seq_p in zip(y_true, y_pred):
+            for t, p in zip(seq_t, seq_p):
+                all_labels.add(t)
+                if t == p:
+                    tp += 1
+                else:
+                    if t != 'O':
+                        fn += 1
+                    if p != 'O':
+                        fp += 1
+        if tp + fp == 0:
+            return 0.0
+        return tp / (tp + fp)
+
+    def _seqeval_recall(y_true, y_pred, **kwargs):
+        average = kwargs.get('average', 'micro')
+        tp = fp = fn = 0
+        for seq_t, seq_p in zip(y_true, y_pred):
+            for t, p in zip(seq_t, seq_p):
+                if t == p:
+                    tp += 1
+                else:
+                    if t != 'O':
+                        fn += 1
+                    if p != 'O':
+                        fp += 1
+        if tp + fn == 0:
+            return 0.0
+        return tp / (tp + fn)
+
+    def _seqeval_f1(y_true, y_pred, **kwargs):
+        p = _seqeval_precision(y_true, y_pred, **kwargs)
+        r = _seqeval_recall(y_true, y_pred, **kwargs)
+        if p + r == 0:
+            return 0.0
+        return 2 * p * r / (p + r)
+
+    def _seqeval_report(y_true, y_pred, **kwargs):
+        labels = kwargs.get('labels', [])
+        digits = kwargs.get('digits', 4)
+        output_dict = kwargs.get('output_dict', False)
+        report = sklearn_report(y_true, y_pred, labels=labels, digits=digits, output_dict=output_dict)
+        return report
+
+    return _seqeval_precision, _seqeval_recall, _seqeval_f1, _seqeval_report
+
+
+_seqeval_precision, _seqeval_recall, _seqeval_f1, _seqeval_report = _get_seqeval_functions()
+
+
+def seqeval_precision(y_true, y_pred, **kwargs):
+    return _seqeval_precision(y_true, y_pred, **kwargs)
+
+
+def seqeval_recall(y_true, y_pred, **kwargs):
+    return _seqeval_recall(y_true, y_pred, **kwargs)
+
+
+def seqeval_f1(y_true, y_pred, **kwargs):
+    return _seqeval_f1(y_true, y_pred, **kwargs)
+
+
+def seqeval_report(y_true, y_pred, **kwargs):
+    return _seqeval_report(y_true, y_pred, **kwargs)
 
 
 # ---------------------------------------------------------------

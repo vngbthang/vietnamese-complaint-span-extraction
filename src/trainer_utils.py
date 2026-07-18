@@ -1,5 +1,6 @@
 """Trainer utilities and callbacks for token classification."""
 
+import inspect
 import json
 import os
 import random
@@ -99,6 +100,52 @@ def prepare_hf_dataset(
     })
 
 
+import inspect
+
+from transformers import TrainingArguments
+
+
+def make_training_args(**kwargs):
+    """
+    Build TrainingArguments with automatic filtering of unsupported kwargs.
+
+    Handles Kaggle compatibility by:
+    - Dropping args not present in the installed transformers version
+    - Translating eval_strategy <-> evaluation_strategy
+    - Printing dropped args for visibility
+
+    Always enforces: save_strategy='no', load_best_model_at_end=False
+    """
+    valid_keys = set(inspect.signature(TrainingArguments.__init__).parameters.keys())
+
+    # Compatibility: some versions use eval_strategy, others use evaluation_strategy
+    if "evaluation_strategy" in kwargs:
+        if "evaluation_strategy" not in valid_keys and "eval_strategy" in valid_keys:
+            kwargs["eval_strategy"] = kwargs.pop("evaluation_strategy")
+        elif "evaluation_strategy" in valid_keys and "eval_strategy" not in valid_keys:
+            kwargs["evaluation_strategy"] = kwargs.pop("evaluation_strategy")
+        elif "evaluation_strategy" not in valid_keys and "eval_strategy" not in valid_keys:
+            kwargs.pop("evaluation_strategy", None)
+
+    if "eval_strategy" in kwargs:
+        if "eval_strategy" not in valid_keys and "evaluation_strategy" in valid_keys:
+            kwargs["evaluation_strategy"] = kwargs.pop("eval_strategy")
+        elif "eval_strategy" not in valid_keys and "evaluation_strategy" not in valid_keys:
+            kwargs.pop("eval_strategy", None)
+
+    # Always enforce no-checkpoint behavior
+    kwargs["save_strategy"] = "no"
+    kwargs["load_best_model_at_end"] = False
+
+    filtered = {k: v for k, v in kwargs.items() if k in valid_keys}
+    dropped = sorted(set(kwargs.keys()) - set(filtered.keys()))
+
+    if dropped:
+        print(f"[TrainingArguments] Dropped unsupported args: {dropped}")
+
+    return TrainingArguments(**filtered)
+
+
 def build_training_args(
     output_dir: str,
     learning_rate: float = 2e-5,
@@ -116,9 +163,9 @@ def build_training_args(
     seed: int = 42,
     load_best_model_at_end: bool = True,
     early_stopping_patience: int = 3,
-) -> TrainingArguments:
-    """Build HuggingFace TrainingArguments."""
-    return TrainingArguments(
+):
+    """Build HuggingFace TrainingArguments (no-checkpoint variant)."""
+    return make_training_args(
         output_dir=output_dir,
         learning_rate=learning_rate,
         per_device_train_batch_size=train_batch_size,
@@ -131,7 +178,7 @@ def build_training_args(
         logging_steps=logging_steps,
         eval_strategy='steps',
         eval_steps=eval_steps,
-        save_strategy='steps',
+        save_strategy='no',
         save_steps=save_steps,
         save_total_limit=save_total_limit,
         load_best_model_at_end=load_best_model_at_end,
