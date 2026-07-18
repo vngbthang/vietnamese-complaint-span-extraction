@@ -46,7 +46,7 @@ from src.metrics import (
     seqeval_report,
 )
 from src.tokenization_utils import encode_tokens_with_labels, encode_tokens_with_labels_sanity_check
-from src.trainer_utils import make_training_args
+from src.trainer_utils import make_training_args, normalize_training_config
 
 LABEL_SET = ['O', 'B-COMP', 'I-COMP']
 
@@ -290,19 +290,19 @@ def train_model(
     print(f"  Output: {run_dir}")
     print(f"  NOTE: No checkpoints will be saved.")
 
-    epochs = 1 if smoke_test else config.get('num_train_epochs', 5)
+    epochs = 1 if smoke_test else int(config.get('num_train_epochs', 5))
 
     training_args = make_training_args(
         output_dir=run_dir,
         num_train_epochs=epochs,
         per_device_train_batch_size=(
-            config.get('train_batch_size', 16) if not smoke_test else 4),
+            4 if smoke_test else int(config.get('train_batch_size', 16))),
         per_device_eval_batch_size=(
-            config.get('eval_batch_size', 16) if not smoke_test else 8),
-        gradient_accumulation_steps=config.get('gradient_accumulation_steps', 1),
-        learning_rate=config.get('learning_rate', 2e-5),
-        weight_decay=config.get('weight_decay', 0.01),
-        warmup_ratio=config.get('warmup_ratio', 0.06),
+            8 if smoke_test else int(config.get('eval_batch_size', 16))),
+        gradient_accumulation_steps=int(config.get('gradient_accumulation_steps', 1)),
+        learning_rate=float(config.get('learning_rate', 2e-5)),
+        weight_decay=float(config.get('weight_decay', 0.01)),
+        warmup_ratio=float(config.get('warmup_ratio', 0.06)),
         fp16=config.get('fp16', True) and device.type == 'cuda',
         # ---- NO CHECKPOINT SAVING ----
         save_strategy='no',
@@ -313,7 +313,7 @@ def train_model(
         logging_steps=config.get('logging_steps', 50),
         eval_strategy='epoch',
         report_to='none',
-        seed=config.get('seed', 42),
+        seed=int(config.get('seed', 42)),
         dataloader_num_workers=2,
         remove_unused_columns=False,
         run_name=model_key,
@@ -479,6 +479,7 @@ def train_model(
 def main():
     args = parse_args()
     config = load_config(args.config)
+    config = normalize_training_config(config)
 
     output_dir = config.get('output_dir', 'outputs/experiments/direct_baselines')
     os.makedirs(output_dir, exist_ok=True)
@@ -488,7 +489,12 @@ def main():
     if torch.cuda.is_available():
         print(f"GPU: {torch.cuda.get_device_name(0)}")
 
-    set_seed(config.get('seed', 42))
+    set_seed(int(config.get('seed', 42)))
+
+    print("Config type check:")
+    for k in ["learning_rate", "weight_decay", "warmup_ratio", "num_train_epochs",
+               "train_batch_size", "eval_batch_size", "gradient_accumulation_steps"]:
+        print(f"  {k}: {config.get(k)} ({type(config.get(k)).__name__})")
 
     print(f"\nLoading data from {config['data_dir']}...")
     train_records = load_dataset(config['data_dir'], 'train')
@@ -526,7 +532,7 @@ def main():
         print(f"  Tokenizer is_fast: {getattr(tokenizer, 'is_fast', False)}")
 
         print(f"  Tokenizing data...")
-        max_len = config.get('max_length', 256)
+        max_len = int(config.get('max_length', 256))
 
         # Sanity check on first 3 records
         encode_tokens_with_labels_sanity_check(

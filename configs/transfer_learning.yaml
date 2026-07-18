@@ -11,7 +11,7 @@ target_epochs: 5
 train_batch_size: 16
 eval_batch_size: 16
 gradient_accumulation_steps: 1
-learning_rate: 2e-5
+learning_rate: 0.00002
 weight_decay: 0.01
 warmup_ratio: 0.06
 seed: 42

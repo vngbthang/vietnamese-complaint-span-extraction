@@ -100,9 +100,61 @@ def prepare_hf_dataset(
     })
 
 
-import inspect
+def normalize_training_config(config: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Normalize YAML-loaded config values to proper Python types.
 
-from transformers import TrainingArguments
+    Handles YAML parser quirks where numbers may be loaded as strings
+    (e.g. '0.00002' from scientific notation or quoted values).
+    """
+    int_keys = [
+        "max_length",
+        "train_batch_size",
+        "eval_batch_size",
+        "gradient_accumulation_steps",
+        "num_train_epochs",
+        "aux_epochs",
+        "target_epochs",
+        "seed",
+        "save_total_limit",
+        "logging_steps",
+        "eval_steps",
+    ]
+
+    float_keys = [
+        "learning_rate",
+        "weight_decay",
+        "warmup_ratio",
+        "max_grad_norm",
+    ]
+
+    bool_keys = [
+        "fp16",
+        "bf16",
+        "cleanup_checkpoints",
+        "save_model",
+        "save_checkpoints",
+        "save_tokenizer",
+        "keep_checkpoints",
+        "load_best_model_at_end",
+    ]
+
+    for k in int_keys:
+        if k in config and config[k] is not None:
+            config[k] = int(config[k])
+
+    for k in float_keys:
+        if k in config and config[k] is not None:
+            config[k] = float(config[k])
+
+    for k in bool_keys:
+        if k in config and config[k] is not None:
+            if isinstance(config[k], str):
+                config[k] = config[k].lower() in ["true", "1", "yes", "y"]
+            else:
+                config[k] = bool(config[k])
+
+    return config
 
 
 def make_training_args(**kwargs):

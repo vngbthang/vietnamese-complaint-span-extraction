@@ -46,7 +46,7 @@ from src.metrics import (
     seqeval_report,
 )
 from src.tokenization_utils import encode_tokens_with_labels, encode_tokens_with_labels_sanity_check
-from src.trainer_utils import make_training_args
+from src.trainer_utils import make_training_args, normalize_training_config
 
 # ---------------------------------------------------------------
 # Cleanup utilities
@@ -314,7 +314,7 @@ def train_transfer(
         return True
 
     model_name = config['model_name']
-    max_length = config.get('max_length', 256)
+    max_length = int(config.get('max_length', 256))
 
     # ---- Load auxiliary data ----
     aux_records_all = []
@@ -354,17 +354,17 @@ def train_transfer(
     aux_train_ds = prepare_dataset(aux_train, tokenizer, aux_label2id, max_length)
     aux_val_ds = prepare_dataset(aux_val, tokenizer, aux_label2id, max_length)
 
-    aux_epochs = 1 if smoke_test else config.get('aux_epochs', 3)
+    aux_epochs = 1 if smoke_test else int(config.get('aux_epochs', 3))
 
     aux_args = make_training_args(
         output_dir=os.path.join(run_dir, 'phase1_aux'),
         num_train_epochs=aux_epochs,
         per_device_train_batch_size=(4 if smoke_test
-                                      else config.get('train_batch_size', 16)),
-        per_device_eval_batch_size=config.get('eval_batch_size', 16),
-        learning_rate=config.get('learning_rate', 2e-5),
-        weight_decay=config.get('weight_decay', 0.01),
-        warmup_ratio=config.get('warmup_ratio', 0.06),
+                                      else int(config.get('train_batch_size', 16))),
+        per_device_eval_batch_size=int(config.get('eval_batch_size', 16)),
+        learning_rate=float(config.get('learning_rate', 2e-5)),
+        weight_decay=float(config.get('weight_decay', 0.01)),
+        warmup_ratio=float(config.get('warmup_ratio', 0.06)),
         fp16=config.get('fp16', True) and device.type == 'cuda',
         save_strategy='no',
         save_total_limit=0,
@@ -373,7 +373,7 @@ def train_transfer(
         logging_steps=20,
         eval_strategy='epoch' if not smoke_test else 'no',
         report_to='none',
-        seed=config.get('seed', 42),
+        seed=int(config.get('seed', 42)),
         dataloader_num_workers=2,
         remove_unused_columns=False,
         disable_tqdm=False,
@@ -447,7 +447,7 @@ def train_transfer(
     del encoder_state
     torch.cuda.empty_cache()
 
-    target_epochs = 1 if smoke_test else config.get('target_epochs', 5)
+    target_epochs = 1 if smoke_test else int(config.get('target_epochs', 5))
 
     target_dir = os.path.join(run_dir, 'phase2_target')
     os.makedirs(target_dir, exist_ok=True)
@@ -456,11 +456,11 @@ def train_transfer(
         output_dir=target_dir,
         num_train_epochs=target_epochs,
         per_device_train_batch_size=(4 if smoke_test
-                                      else config.get('train_batch_size', 16)),
-        per_device_eval_batch_size=config.get('eval_batch_size', 16),
-        learning_rate=config.get('learning_rate', 2e-5),
-        weight_decay=config.get('weight_decay', 0.01),
-        warmup_ratio=config.get('warmup_ratio', 0.06),
+                                      else int(config.get('train_batch_size', 16))),
+        per_device_eval_batch_size=int(config.get('eval_batch_size', 16)),
+        learning_rate=float(config.get('learning_rate', 2e-5)),
+        weight_decay=float(config.get('weight_decay', 0.01)),
+        warmup_ratio=float(config.get('warmup_ratio', 0.06)),
         fp16=config.get('fp16', True) and device.type == 'cuda',
         save_strategy='no',
         save_total_limit=0,
@@ -469,7 +469,7 @@ def train_transfer(
         logging_steps=20,
         eval_strategy='epoch' if not smoke_test else 'no',
         report_to='none',
-        seed=config.get('seed', 42),
+        seed=int(config.get('seed', 42)),
         dataloader_num_workers=2,
         remove_unused_columns=False,
         disable_tqdm=False,
@@ -623,13 +623,20 @@ def train_transfer(
 def main():
     args = parse_args()
     config = load_config(args.config)
+    config = normalize_training_config(config)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: {device}")
     if torch.cuda.is_available():
         print(f"GPU: {torch.cuda.get_device_name(0)}")
 
-    set_seed(config.get('seed', 42))
+    set_seed(int(config.get('seed', 42)))
+
+    print("Config type check:")
+    for k in ["learning_rate", "weight_decay", "warmup_ratio",
+               "train_batch_size", "eval_batch_size",
+               "gradient_accumulation_steps"]:
+        print(f"  {k}: {config.get(k)} ({type(config.get(k)).__name__})")
 
     strategies = args.strategy or list(config['strategies'].keys())
     if isinstance(strategies, str):
