@@ -2,9 +2,13 @@
 """
 Build paper-ready tables, figures, and analysis files from completed experiments.
 
-Inputs:
+Inputs (any of these — see ``discover_inputs`` for fallback paths):
 - outputs/experiments/direct_baselines/experiment_results.csv
+- outputs/experiments/transfer_learning/experiment_results.csv
+- outputs/experiments/direct_baselines/<model>/test_metrics.json
+- outputs/experiments/direct_baselines/<model>/completed_result.json
 - outputs/experiments/transfer_learning/<strategy>/test_metrics.json
+- outputs/experiments/transfer_learning/<strategy>/completed_result.json
 - outputs/experiments/transfer_learning/<strategy>/error_analysis.csv
 - outputs/experiments/transfer_learning/<strategy>/per_label_report.csv
 
@@ -19,6 +23,12 @@ Outputs (all under outputs/paper_assets/):
 - best_model_error_summary.md
 - per_label_reports_combined.csv
 - result_interpretation.txt
+
+Robustness:
+- Searches ``outputs/`` recursively if exact paths are missing.
+- Reconstructs direct/transfer ``experiment_results.csv`` automatically from
+  per-run JSON files when those CSVs are absent.
+- Prints a clear diagnostic block listing everything found before loading.
 """
 
 from __future__ import annotations
@@ -29,7 +39,7 @@ import os
 import sys
 import warnings
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 import pandas as pd
 
@@ -44,64 +54,391 @@ DEFAULT_DIRECT_DIR = REPO_ROOT / "outputs" / "experiments" / "direct_baselines"
 DEFAULT_TRANSFER_DIR = REPO_ROOT / "outputs" / "experiments" / "transfer_learning"
 DEFAULT_ASSETS_DIR = REPO_ROOT / "outputs" / "paper_assets"
 
+# Direct baseline folders in canonical order, with their static metadata
+DIRECT_MODELS: List[Tuple[str, str, str]] = [
+    ("phobert_ce",            "vinai/phobert-base-v2",         "ce"),
+    ("phobert_weighted_ce",   "vinai/phobert-base-v2",         "weighted_ce"),
+    ("xlm_roberta_ce",        "xlm-roberta-base",              "ce"),
+    ("mbert_ce",              "bert-base-multilingual-cased",  "ce"),
+]
+
+# Transfer strategies in canonical order, with auxiliary_data labels
+TRANSFER_STRATEGIES: List[Tuple[str, str]] = [
+    ("aux_all_then_complaint",   "UIT-ViSD4SA + CausaSent-ATE-v2"),
+    ("causasent_then_complaint", "CausaSent-ATE-v2"),
+    ("uvisd4sa_then_complaint",  "UIT-ViSD4SA"),
+]
+
+# Key aliases — JSON keys may differ between scripts
+KEY_ALIASES: Dict[str, Tuple[str, ...]] = {
+    "entity_precision": ("entity_precision", "test_entity_precision"),
+    "entity_recall":    ("entity_recall",    "test_entity_recall"),
+    "entity_f1":        ("entity_f1",        "test_entity_f1"),
+    "token_macro_f1":   ("token_macro_f1",   "test_token_f1_macro", "token_f1_macro"),
+    "token_accuracy":   ("token_accuracy",   "test_token_accuracy"),
+    "train_runtime":    ("train_runtime",    "train_time_seconds", "total_time_seconds",
+                         "total_runtime", "test_train_runtime"),
+}
+
 
 # ---------------------------------------------------------------
-# Loaders
+# Diagnostics
 # ---------------------------------------------------------------
 
-def load_direct_results(direct_dir: Path) -> pd.DataFrame:
-    """Load direct-baseline experiment_results.csv if present."""
-    csv_path = direct_dir / "experiment_results.csv"
-    if not csv_path.exists():
-        print(f"  [WARN] Missing direct results: {csv_path}")
-        return pd.DataFrame()
-
-    df = pd.read_csv(csv_path)
-    df["setting_type"] = "direct"
-    df["method"] = df.get("model_key", df.get("model_name", "unknown"))
-    df["auxiliary_data"] = "none"
-    df["train_time_seconds"] = df.get("train_time_seconds", pd.NA)
-    return df
-
-
-def load_transfer_results(transfer_dir: Path) -> pd.DataFrame:
-    """
-    Aggregate per-strategy test_metrics.json files into one DataFrame.
-
-    Falls back to a manually-built per-strategy summary if the
-    transfer experiment_results.csv doesn't exist yet.
-    """
-    rows: List[Dict[str, Any]] = []
-
-    if not transfer_dir.exists():
-        print(f"  [WARN] Missing transfer directory: {transfer_dir}")
-        return pd.DataFrame()
-
-    for strategy_dir in sorted(p for p in transfer_dir.iterdir() if p.is_dir()):
-        metrics_path = strategy_dir / "test_metrics.json"
-        if not metrics_path.exists():
-            print(f"  [WARN] No test_metrics.json in {strategy_dir}")
+def _safe_glob(root: Path, patterns) -> List[Path]:
+    """Return sorted unique files matching any pattern under root, ignoring .git."""
+    # Defensive: accept either a single string or any iterable of patterns.
+    if isinstance(patterns, (str, bytes)):
+        patterns = [patterns]
+    out: List[Path] = []
+    seen: set = set()
+    for pattern in patterns:
+        # On older Python (3.9), Path.glob does not support '**/name' patterns.
+        # Use rglob for recursive patterns; glob for non-recursive ones.
+        if not isinstance(pattern, str):
             continue
-        try:
-            with open(metrics_path, encoding="utf-8") as f:
-                m = json.load(f)
-        except (OSError, json.JSONDecodeError) as e:
-            print(f"  [WARN] Could not read {metrics_path}: {e}")
+        if pattern.startswith("**/"):
+            target = pattern[3:]
+            iterator = root.rglob(target) if target else root.rglob("*")
+        else:
+            try:
+                iterator = root.glob(pattern)
+            except (NotImplementedError, ValueError):
+                continue
+        for p in iterator:
+            if ".git" in p.parts:
+                continue
+            if p.is_file() and p not in seen:
+                seen.add(p)
+                out.append(p)
+    return sorted(out)
+
+
+def print_diagnostics(repo_root: Path, outputs_root: Path) -> None:
+    print(f"Repo root: {repo_root}")
+    print(f"Outputs root: {outputs_root}")
+    print("Existing output files:")
+
+    # Search recursively under outputs/ and repo root (capped depth to keep fast)
+    def _all_under(root: Path, name: str) -> List[Path]:
+        if not root.exists():
+            return []
+        return sorted(p for p in root.rglob(name) if ".git" not in p.parts)
+
+    exp_results = _all_under(outputs_root, "experiment_results.csv")
+    exp_results += _all_under(repo_root, "experiment_results.csv")
+    test_metrics = _all_under(outputs_root, "test_metrics.json")
+    completed = _all_under(outputs_root, "completed_result.json")
+    err = _all_under(outputs_root, "error_analysis.csv")
+    per_label = _all_under(outputs_root, "per_label_report.csv")
+
+    def _fmt(paths: List[Path]) -> str:
+        if not paths:
+            return "    (none)"
+        return "\n".join(f"    - {p.relative_to(repo_root)}" for p in paths)
+
+    print(f"  experiment_results.csv:\n{_fmt(exp_results)}")
+    print(f"  test_metrics.json:\n{_fmt(test_metrics)}")
+    print(f"  completed_result.json:\n{_fmt(completed)}")
+    print(f"  error_analysis.csv:\n{_fmt(err)}")
+    print(f"  per_label_report.csv:\n{_fmt(per_label)}")
+
+
+# ---------------------------------------------------------------
+# Loaders — robust to missing/misplaced files
+# ---------------------------------------------------------------
+
+def discover_experiment_results_csv(
+    repo_root: Path,
+    outputs_root: Path,
+    setting_type: str,
+) -> Optional[Path]:
+    """
+    Locate an experiment_results.csv file for ``setting_type``
+    (``direct`` or ``transfer``). Searches recursively under outputs/ and
+    repo root, then classifies candidates by path substring. Returns ``None``
+    if no candidate matches the setting-specific path marker.
+    """
+    needle = "direct_baselines" if setting_type == "direct" else "transfer_learning"
+
+    candidates: List[Path] = []
+    candidates += _safe_glob(outputs_root, ["**/experiment_results.csv"])
+    candidates += _safe_glob(repo_root, ["**/experiment_results.csv"])
+
+    # Strict classification: only paths matching the setting marker
+    for p in candidates:
+        if needle in str(p):
+            return p
+
+    return None
+
+
+def _pick(metrics: Dict[str, Any], canonical_key: str) -> Optional[float]:
+    """Look up a metric using all known aliases. Returns float or None."""
+    for alias in KEY_ALIASES.get(canonical_key, (canonical_key,)):
+        if alias in metrics and metrics[alias] is not None:
+            try:
+                return float(metrics[alias])
+            except (TypeError, ValueError):
+                continue
+    return None
+
+
+def _load_metrics_dict(path: Path) -> Optional[Dict[str, Any]]:
+    """Load a metrics JSON; unwraps ``completed_result.json`` if needed."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError) as e:
+        print(f"  [WARN] Could not read {path}: {e}")
+        return None
+    # Unwrap completed_result.json
+    if isinstance(data, dict) and "test_metrics" in data and isinstance(data["test_metrics"], dict):
+        return data["test_metrics"]
+    return data
+
+
+def reconstruct_direct_csv(
+    direct_dir: Path,
+    out_path: Path,
+) -> bool:
+    """
+    Reconstruct outputs/<direct_dir>/experiment_results.csv from each
+    per-model JSON file. Returns True on success.
+    """
+    if not direct_dir.exists():
+        print(f"  [WARN] direct_dir does not exist: {direct_dir}")
+        return False
+
+    rows: List[Dict[str, Any]] = []
+    for model_key, model_name, loss_type in DIRECT_MODELS:
+        model_dir = direct_dir / model_key
+        # Prefer test_metrics.json, fall back to completed_result.json
+        src = model_dir / "test_metrics.json"
+        if not src.exists():
+            src = model_dir / "completed_result.json"
+        if not src.exists():
+            print(f"  [WARN] No JSON for direct model {model_key}; skipping.")
+            continue
+
+        m = _load_metrics_dict(src)
+        if m is None:
             continue
 
         rows.append(
             {
-                "setting_type": "transfer",
-                "method": m.get("strategy", strategy_dir.name),
-                "model_name": m.get("model_name", "unknown"),
-                "auxiliary_data": m.get("aux_filter_source", "all"),
-                "entity_precision": m.get("entity_precision"),
-                "entity_recall": m.get("entity_recall"),
-                "entity_f1": m.get("entity_f1"),
-                "token_f1_macro": m.get("token_f1_macro"),
-                "token_f1_weighted": m.get("token_f1_weighted"),
-                "token_accuracy": m.get("token_accuracy"),
-                "train_time_seconds": m.get("total_time_seconds"),
+                "experiment_name": model_key,
+                "model_name":       m.get("model_name", model_name),
+                "loss_type":        m.get("loss", loss_type),
+                "entity_precision": _pick(m, "entity_precision"),
+                "entity_recall":    _pick(m, "entity_recall"),
+                "entity_f1":        _pick(m, "entity_f1"),
+                "token_macro_f1":   _pick(m, "token_macro_f1"),
+                "token_accuracy":   _pick(m, "token_accuracy"),
+                "train_runtime":    _pick(m, "train_runtime"),
+                "output_dir":       str(model_dir.relative_to(REPO_ROOT)),
+            }
+        )
+
+    if not rows:
+        return False
+
+    df = pd.DataFrame(rows)
+    df.to_csv(out_path, index=False)
+    print(f"  [INFO] Reconstructed direct CSV at {out_path.relative_to(REPO_ROOT)} "
+          f"with {len(df)} rows.")
+    return True
+
+
+def reconstruct_transfer_csv(
+    transfer_dir: Path,
+    out_path: Path,
+) -> bool:
+    """Reconstruct outputs/<transfer_dir>/experiment_results.csv from per-strategy JSON."""
+    if not transfer_dir.exists():
+        print(f"  [WARN] transfer_dir does not exist: {transfer_dir}")
+        return False
+
+    rows: List[Dict[str, Any]] = []
+    aux_label_map = dict(TRANSFER_STRATEGIES)
+
+    for strategy_key, aux_label in TRANSFER_STRATEGIES:
+        strat_dir = transfer_dir / strategy_key
+        src = strat_dir / "test_metrics.json"
+        if not src.exists():
+            src = strat_dir / "completed_result.json"
+        if not src.exists():
+            print(f"  [WARN] No JSON for transfer strategy {strategy_key}; skipping.")
+            continue
+
+        m = _load_metrics_dict(src)
+        if m is None:
+            continue
+
+        rows.append(
+            {
+                "strategy":         strategy_key,
+                "experiment_name":  strategy_key,
+                "model_name":       m.get("model_name", "vinai/phobert-base-v2"),
+                "auxiliary_data":   aux_label_map.get(strategy_key, "unknown"),
+                "entity_precision": _pick(m, "entity_precision"),
+                "entity_recall":    _pick(m, "entity_recall"),
+                "entity_f1":        _pick(m, "entity_f1"),
+                "token_macro_f1":   _pick(m, "token_macro_f1"),
+                "token_accuracy":   _pick(m, "token_accuracy"),
+                "total_runtime":    _pick(m, "train_runtime"),
+                "output_dir":       str(strat_dir.relative_to(REPO_ROOT)),
+            }
+        )
+
+    if not rows:
+        return False
+
+    df = pd.DataFrame(rows)
+    df.to_csv(out_path, index=False)
+    print(f"  [INFO] Reconstructed transfer CSV at {out_path.relative_to(REPO_ROOT)} "
+          f"with {len(df)} rows.")
+    return True
+
+
+def _ensure_experiment_results_csv(
+    repo_root: Path,
+    outputs_root: Path,
+    setting_type: str,
+    canonical_dir: Path,
+) -> Optional[Path]:
+    """
+    Make sure an experiment_results.csv is available for the given setting.
+
+    Resolution order:
+      1. Exact canonical path:  <canonical_dir>/experiment_results.csv
+      2. Recursive search under outputs/ and repo root (path classified)
+      3. Auto-reconstruct from per-run JSON files
+    """
+    needle = "direct_baselines" if setting_type == "direct" else "transfer_learning"
+
+    # 1. Exact path
+    canonical_csv = canonical_dir / "experiment_results.csv"
+    if canonical_csv.exists():
+        return canonical_csv
+
+    # 2. Recursive search
+    found = discover_experiment_results_csv(repo_root, outputs_root, setting_type)
+    if found is not None:
+        print(f"  [INFO] Using discovered {setting_type} CSV: "
+              f"{found.relative_to(repo_root)}")
+        return found
+
+    # 3. Reconstruct
+    print(f"  [WARN] No {setting_type} experiment_results.csv found; "
+          f"reconstructing from per-run JSON files.")
+    canonical_dir.mkdir(parents=True, exist_ok=True)
+    if setting_type == "direct":
+        ok = reconstruct_direct_csv(canonical_dir, canonical_csv)
+    else:
+        ok = reconstruct_transfer_csv(canonical_dir, canonical_csv)
+    return canonical_csv if ok else None
+
+
+def load_direct_results(
+    csv_path: Path,
+    direct_dir: Path,
+) -> pd.DataFrame:
+    """Load direct results from CSV; ensure spec-mandated columns exist."""
+    if csv_path is None or not csv_path.exists():
+        print(f"  [WARN] Missing direct CSV: {csv_path}")
+        return pd.DataFrame()
+
+    df = pd.read_csv(csv_path)
+
+    # Normalize to the spec's column names
+    rename_map = {
+        "model_key": "experiment_name",
+        "loss":      "loss_type",
+        "token_f1_macro": "token_macro_f1",
+        "train_time_seconds": "train_runtime",
+    }
+    for old, new in rename_map.items():
+        if old in df.columns and new not in df.columns:
+            df = df.rename(columns={old: new})
+
+    df["setting_type"] = "direct"
+    if "method" not in df.columns:
+        df["method"] = df.get("experiment_name", df.get("model_name", "unknown"))
+    if "auxiliary_data" not in df.columns:
+        df["auxiliary_data"] = "none"
+    if "output_dir" not in df.columns:
+        df["output_dir"] = df.get("experiment_name", "").apply(
+            lambda k: str(direct_dir / k) if isinstance(k, str) else ""
+        )
+    return df
+
+
+def load_transfer_results(
+    csv_path: Optional[Path],
+    transfer_dir: Path,
+) -> pd.DataFrame:
+    """
+    Load transfer results. Prefers the canonical experiment_results.csv;
+    otherwise aggregates from each strategy's test_metrics.json (with
+    completed_result.json as fallback).
+    """
+    if csv_path is not None and csv_path.exists():
+        df = pd.read_csv(csv_path)
+        rename_map = {
+            "token_f1_macro":   "token_macro_f1",
+            "total_time_seconds": "total_runtime",
+            "train_time_seconds": "total_runtime",
+        }
+        for old, new in rename_map.items():
+            if old in df.columns and new not in df.columns:
+                df = df.rename(columns={old: new})
+        df["setting_type"] = "transfer"
+        if "method" not in df.columns:
+            df["method"] = df.get("experiment_name", df.get("strategy", "unknown"))
+        return df
+
+    # Fallback: aggregate from per-strategy JSON
+    if not transfer_dir.exists():
+        print(f"  [WARN] transfer_dir does not exist: {transfer_dir}")
+        return pd.DataFrame()
+
+    print(f"  [INFO] Aggregating transfer results from per-strategy JSON files "
+          f"under {transfer_dir.relative_to(REPO_ROOT)}.")
+    aux_label_map = dict(TRANSFER_STRATEGIES)
+    rows: List[Dict[str, Any]] = []
+
+    # Iterate any subdirectory, not just the canonical list
+    candidate_dirs = sorted(
+        [p for p in transfer_dir.iterdir() if p.is_dir()],
+        key=lambda p: [s for s, _ in TRANSFER_STRATEGIES].index(p.name)
+                     if p.name in dict(TRANSFER_STRATEGIES) else 999,
+    )
+
+    for strat_dir in candidate_dirs:
+        strategy_key = strat_dir.name
+        src = strat_dir / "test_metrics.json"
+        if not src.exists():
+            src = strat_dir / "completed_result.json"
+        if not src.exists():
+            print(f"  [WARN] No JSON for transfer strategy {strategy_key}; skipping.")
+            continue
+        m = _load_metrics_dict(src)
+        if m is None:
+            continue
+        rows.append(
+            {
+                "setting_type":     "transfer",
+                "method":           strategy_key,
+                "model_name":       m.get("model_name", "vinai/phobert-base-v2"),
+                "auxiliary_data":   aux_label_map.get(strategy_key, m.get("aux_filter_source", "all")),
+                "entity_precision": _pick(m, "entity_precision"),
+                "entity_recall":    _pick(m, "entity_recall"),
+                "entity_f1":        _pick(m, "entity_f1"),
+                "token_macro_f1":   _pick(m, "token_macro_f1"),
+                "token_accuracy":   _pick(m, "token_accuracy"),
+                "total_runtime":    _pick(m, "train_runtime"),
+                "output_dir":       str(strat_dir.relative_to(REPO_ROOT)),
             }
         )
 
@@ -121,15 +458,15 @@ def combine_results(
         "entity_precision",
         "entity_recall",
         "entity_f1",
-        "token_f1_macro",
-        "token_f1_weighted",
+        "token_macro_f1",
         "token_accuracy",
-        "train_time_seconds",
+        "total_runtime",
+        "train_runtime",
     ]
 
     parts: List[pd.DataFrame] = []
     if not direct_df.empty:
-        parts.append(direct_df.reindex(columns=cols + ["loss", "num_train_epochs"]))
+        parts.append(direct_df.reindex(columns=cols + ["loss_type", "experiment_name"]))
     if not transfer_df.empty:
         parts.append(transfer_df.reindex(columns=cols))
 
@@ -143,10 +480,10 @@ def combine_results(
         "entity_precision",
         "entity_recall",
         "entity_f1",
-        "token_f1_macro",
-        "token_f1_weighted",
+        "token_macro_f1",
         "token_accuracy",
-        "train_time_seconds",
+        "total_runtime",
+        "train_runtime",
     ]:
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce")
@@ -189,13 +526,16 @@ def write_main_results_md(df: pd.DataFrame, path: Path) -> None:
         "entity_precision",
         "entity_recall",
         "entity_f1",
-        "token_f1_macro",
-        "token_f1_weighted",
+        "token_macro_f1",
         "token_accuracy",
         "train_time_seconds",
         "is_best",
     ]
-    cols = [c for c in cols if c in df.columns]
+    # Map to spec-mandated runtime column names
+    runtime_col = "total_runtime" if "total_runtime" in df.columns else "train_runtime"
+    cols = [c for c in cols if c in df.columns or c == "train_time_seconds"]
+    if runtime_col in df.columns and "train_time_seconds" not in df.columns:
+        cols = [c if c != "train_time_seconds" else runtime_col for c in cols]
 
     with open(path, "w", encoding="utf-8") as f:
         f.write("# Main Results — Vietnamese Complaint Span Extraction\n\n")
@@ -209,10 +549,11 @@ def write_main_results_md(df: pd.DataFrame, path: Path) -> None:
                     "entity_precision",
                     "entity_recall",
                     "entity_f1",
-                    "token_f1_macro",
-                    "token_f1_weighted",
+                    "token_macro_f1",
                     "token_accuracy",
                     "train_time_seconds",
+                    "total_runtime",
+                    "train_runtime",
                 }:
                     cells.append(_safe(v))
                 elif c == "is_best":
@@ -230,12 +571,14 @@ def write_main_results_latex(df: pd.DataFrame, path: Path) -> None:
         "entity_precision",
         "entity_recall",
         "entity_f1",
-        "token_f1_macro",
-        "token_f1_weighted",
+        "token_macro_f1",
         "token_accuracy",
         "train_time_seconds",
     ]
-    cols = [c for c in cols if c in df.columns]
+    runtime_col = "total_runtime" if "total_runtime" in df.columns else "train_runtime"
+    cols = [c for c in cols if c in df.columns or c == "train_time_seconds"]
+    if runtime_col in df.columns and "train_time_seconds" not in df.columns:
+        cols = [c if c != "train_time_seconds" else runtime_col for c in cols]
 
     label_map = {
         "setting_type": "Setting",
@@ -244,10 +587,11 @@ def write_main_results_latex(df: pd.DataFrame, path: Path) -> None:
         "entity_precision": "Ent-P",
         "entity_recall": "Ent-R",
         "entity_f1": "Ent-F1",
-        "token_f1_macro": "Tok-F1 (macro)",
-        "token_f1_weighted": "Tok-F1 (weighted)",
+        "token_macro_f1": "Tok-F1 (macro)",
         "token_accuracy": "Tok-Acc",
         "train_time_seconds": "Train Time (s)",
+        "total_runtime": "Train Time (s)",
+        "train_runtime": "Train Time (s)",
     }
 
     with open(path, "w", encoding="utf-8") as f:
@@ -267,10 +611,11 @@ def write_main_results_latex(df: pd.DataFrame, path: Path) -> None:
                     "entity_precision",
                     "entity_recall",
                     "entity_f1",
-                    "token_f1_macro",
-                    "token_f1_weighted",
+                    "token_macro_f1",
                     "token_accuracy",
                     "train_time_seconds",
+                    "total_runtime",
+                    "train_runtime",
                 }:
                     cells.append(_safe(v))
                 else:
@@ -577,16 +922,17 @@ def write_interpretation(
                 )
         lines.append("")
 
-    # Token-vs-entity gap observation
-    if {"entity_f1", "token_f1_macro"}.issubset(df.columns):
-        sub = df.dropna(subset=["entity_f1", "token_f1_macro"])
+    # Token-vs-entity gap observation (column name was renamed to token_macro_f1)
+    tok_col = "token_macro_f1" if "token_macro_f1" in df.columns else "token_f1_macro"
+    if {"entity_f1", tok_col}.issubset(df.columns):
+        sub = df.dropna(subset=["entity_f1", tok_col])
         if not sub.empty:
             for _, row in sub.iterrows():
-                gap = float(row["token_f1_macro"]) - float(row["entity_f1"])
+                gap = float(row[tok_col]) - float(row["entity_f1"])
                 if gap > 0.2:
                     lines.append(
                         f"- For `{row['method']}`, token-level macro F1 "
-                        f"({float(row['token_f1_macro']):.4f}) is far above "
+                        f"({float(row[tok_col]):.4f}) is far above "
                         f"entity-level F1 ({float(row['entity_f1']):.4f}); "
                         f"a gap of {gap:.4f} suggests boundary errors "
                         "(B-/I- tagging mistakes) are the dominant error type."
@@ -612,6 +958,8 @@ def main() -> None:
     parser.add_argument("--direct_dir", type=Path, default=DEFAULT_DIRECT_DIR)
     parser.add_argument("--transfer_dir", type=Path, default=DEFAULT_TRANSFER_DIR)
     parser.add_argument("--assets_dir", type=Path, default=DEFAULT_ASSETS_DIR)
+    parser.add_argument("--outputs_root", type=Path,
+                        default=REPO_ROOT / "outputs")
     args = parser.parse_args()
 
     assets: Path = args.assets_dir
@@ -621,16 +969,26 @@ def main() -> None:
     print("Building paper-ready assets")
     print("=" * 60)
 
-    direct_df = load_direct_results(args.direct_dir)
-    transfer_df = load_transfer_results(args.transfer_dir)
+    # 1. Diagnostics — show everything we found
+    print_diagnostics(REPO_ROOT, args.outputs_root)
+
+    # 2. Locate or reconstruct experiment_results.csv for each setting
+    direct_csv = _ensure_experiment_results_csv(
+        REPO_ROOT, args.outputs_root, "direct", args.direct_dir)
+    transfer_csv = _ensure_experiment_results_csv(
+        REPO_ROOT, args.outputs_root, "transfer", args.transfer_dir)
+
+    # 3. Load results
+    direct_df = load_direct_results(direct_csv, args.direct_dir)
+    transfer_df = load_transfer_results(transfer_csv, args.transfer_dir)
     combined = combine_results(direct_df, transfer_df)
+
+    print(f"Loaded direct rows: {len(direct_df)}")
+    print(f"Loaded transfer rows: {len(transfer_df)}")
 
     if combined.empty:
         print("  [ERROR] No results loaded. Aborting.")
         sys.exit(1)
-
-    print(f"  Loaded {len(direct_df)} direct rows, "
-          f"{len(transfer_df)} transfer rows, combined={len(combined)} rows.")
 
     # Main results
     write_main_results_csv(combined, assets / "main_results.csv")
