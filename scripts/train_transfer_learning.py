@@ -315,23 +315,56 @@ def train_transfer(
 
     model_name = config['model_name']
     max_length = int(config.get('max_length', 256))
+    seed = int(config.get('seed', 42))
 
-    # ---- Load auxiliary data ----
-    aux_records_all = []
-    for split in ['train', 'valid']:
-        path = os.path.join(config['aux_data_dir'], f'{split}.jsonl')
-        if os.path.exists(path):
-            aux_records_all.extend(load_split(config['aux_data_dir'], split))
+    set_seed(seed)
+    random.seed(seed)
 
-    aux_filter = strategy_config.get('aux_filter_source')
-    if aux_filter:
-        aux_records_all = filter_by_source(aux_records_all, aux_filter)
-        print(f"  Filtered to source={aux_filter}: {len(aux_records_all):,} records")
+    # =============================================================
+    # Phase 1 — Load auxiliary ATE data per strategy
+    # =============================================================
+    aux_train_path = os.path.join(config['aux_data_dir'], 'train.jsonl')
+    aux_valid_path = os.path.join(config['aux_data_dir'], 'valid.jsonl')
+
+    aux_filter_source = strategy_config.get('aux_filter_source')
+    if aux_filter_source:
+        print(f"  Strategy filter: source == {aux_filter_source!r}")
+    else:
+        print("  Strategy filter: <all sources>")
+
+    # Train split
+    aux_train_records = load_split(config['aux_data_dir'], 'train')
+    if aux_filter_source:
+        aux_train_records = filter_by_source(aux_train_records, aux_filter_source)
+
+    # Valid split (may be missing for some filtered strategies)
+    aux_valid_records = []
+    if os.path.exists(aux_valid_path):
+        aux_valid_records = load_split(config['aux_data_dir'], 'valid')
+        if aux_filter_source:
+            aux_valid_records = filter_by_source(aux_valid_records, aux_filter_source)
+
+    # If valid is empty after filtering, hold out 10% of train as valid
+    if not aux_valid_records:
+        n_total = len(aux_train_records)
+        if n_total >= 10:
+            n_valid = max(1, int(n_total * 0.1))
+            rng = random.Random(seed)
+            indices = list(range(n_total))
+            rng.shuffle(indices)
+            valid_idx = set(indices[:n_valid])
+            aux_valid_records = [aux_train_records[i] for i in sorted(valid_idx)]
+            aux_train_records = [aux_train_records[i] for i in range(n_total) if i not in valid_idx]
+            print(f"  [INFO] No aux valid set found — held out {n_valid} records as validation")
+        else:
+            print(f"  [WARN] Aux train too small ({n_total}); skipping aux validation")
 
     if smoke_test:
-        aux_records_all = aux_records_all[:100]
+        aux_train_records = aux_train_records[:100]
+        aux_valid_records = aux_valid_records[:32]
 
-    print(f"  Auxiliary records: {len(aux_records_all):,}")
+    print(f"Aux train records: {len(aux_train_records)}")
+    print(f"Aux valid records: {len(aux_valid_records)}")
 
     aux_label2id = {'O': 0, 'B-ASP': 1, 'I-ASP': 2}
     aux_id2label = {v: k for k, v in aux_label2id.items()}
@@ -340,20 +373,20 @@ def train_transfer(
     print(f"  Tokenizer class: {tokenizer.__class__.__name__}")
     print(f"  Tokenizer is_fast: {getattr(tokenizer, 'is_fast', False)}")
 
-    # Sanity check on first 3 aux records
+    # Sanity check the encoder on a few auxiliary records
     encode_tokens_with_labels_sanity_check(
-        tokenizer, aux_train, aux_label2id, max_length, n_samples=3)
+        tokenizer, aux_train_records, aux_label2id, max_length, n_samples=3)
 
-    # Split aux for validation
-    n_aux = len(aux_records_all)
-    n_aux_train = int(n_aux * 0.9)
-    aux_train = aux_records_all[:n_aux_train]
-    aux_val = aux_records_all[n_aux_train:]
+    # Prepare HF datasets for auxiliary phase
+    aux_train_ds = prepare_dataset(aux_train_records, tokenizer, aux_label2id, max_length)
+    aux_valid_ds = prepare_dataset(aux_valid_records, tokenizer, aux_label2id, max_length)
 
-    print(f"  Aux train: {len(aux_train):,}, aux val: {len(aux_val):,}")
-    aux_train_ds = prepare_dataset(aux_train, tokenizer, aux_label2id, max_length)
-    aux_val_ds = prepare_dataset(aux_val, tokenizer, aux_label2id, max_length)
+    print(f"Aux train dataset: {len(aux_train_ds)}")
+    print(f"Aux valid dataset: {len(aux_valid_ds)}")
 
+    # =============================================================
+    # Phase 1 — Auxiliary ATE pretraining (in memory)
+    # =============================================================
     aux_epochs = 1 if smoke_test else int(config.get('aux_epochs', 3))
 
     aux_args = make_training_args(
@@ -371,17 +404,15 @@ def train_transfer(
         load_best_model_at_end=False,
         logging_dir=os.path.join(run_dir, 'phase1_aux', 'logs'),
         logging_steps=20,
-        eval_strategy='epoch' if not smoke_test else 'no',
+        eval_strategy='epoch' if (not smoke_test and len(aux_valid_ds) > 0) else 'no',
         report_to='none',
-        seed=int(config.get('seed', 42)),
+        seed=seed,
         dataloader_num_workers=2,
         remove_unused_columns=False,
         disable_tqdm=False,
     )
 
-    # ---- Phase 1: Auxiliary pretraining (in memory) ----
     print(f"\n  === Phase 1: Auxiliary ATE Pretraining (in memory) ===")
-
     aux_model = build_model(model_name, len(aux_label2id),
                               aux_label2id, aux_id2label, device)
 
@@ -389,7 +420,7 @@ def train_transfer(
         model=aux_model,
         args=aux_args,
         train_dataset=aux_train_ds,
-        eval_dataset=aux_val_ds if not smoke_test else None,
+        eval_dataset=aux_valid_ds if (not smoke_test and len(aux_valid_ds) > 0) else None,
         compute_metrics=compute_metrics_fn(aux_id2label) if not smoke_test else None,
         data_collator=DataCollatorForTokenClassification(
             tokenizer, pad_to_multiple_of=8),
@@ -411,39 +442,42 @@ def train_transfer(
     print(f"  Extracting encoder state dict in memory...")
     encoder_state = extract_encoder_state_dict(aux_model)
 
-    # Free auxiliary model memory
+    # Free auxiliary model memory before we build the target model
     del aux_trainer
     del aux_model
     torch.cuda.empty_cache()
     print(f"  Auxiliary model freed from memory.")
 
-    # ---- Load complaint data ----
-    target_train = load_split(config['target_data_dir'], 'train')
-    target_valid = load_split(config['target_data_dir'], 'valid')
-    target_test  = load_split(config['target_data_dir'], 'test')
+    # =============================================================
+    # Phase 2 — Load complaint (target) data
+    # =============================================================
+    complaint_train_records = load_split(config['target_data_dir'], 'train')
+    complaint_valid_records = load_split(config['target_data_dir'], 'valid')
+    complaint_test_records  = load_split(config['target_data_dir'], 'test')
 
     if smoke_test:
-        target_train = target_train[:32]
-        target_valid = target_valid[:32]
-        target_test  = target_test[:32]
+        complaint_train_records = complaint_train_records[:32]
+        complaint_valid_records = complaint_valid_records[:32]
+        complaint_test_records  = complaint_test_records[:32]
 
-    print(f"  Target train: {len(target_train):,}")
-    print(f"  Target valid: {len(target_valid):,}")
-    print(f"  Target test:  {len(target_test):,}")
+    print(f"Complaint train records: {len(complaint_train_records)}")
+    print(f"Complaint valid records: {len(complaint_valid_records)}")
+    print(f"Complaint test records: {len(complaint_test_records)}")
 
-    target_label2id = {'O': 0, 'B-COMP': 1, 'I-COMP': 2}
-    target_id2label = {v: k for k, v in target_label2id.items()}
+    complaint_label2id = {'O': 0, 'B-COMP': 1, 'I-COMP': 2}
+    complaint_id2label = {v: k for k, v in complaint_label2id.items()}
 
-    # ---- Phase 2: Build complaint model and load encoder in memory ----
+    # =============================================================
+    # Phase 2 — Build complaint model, copy encoder weights in memory
+    # =============================================================
     print(f"\n  === Phase 2: Complaint Fine-tuning (pretrained encoder in memory) ===")
 
-    target_model = build_model(
-        model_name, len(target_label2id),
-        target_label2id, target_id2label, device)
+    complaint_model = build_model(
+        model_name, len(complaint_label2id),
+        complaint_label2id, complaint_id2label, device)
 
-    # Load encoder weights in memory — classifier head stays fresh
     print(f"  Loading pretrained encoder into new complaint model (in memory)...")
-    load_encoder_into_model(target_model, encoder_state)
+    load_encoder_into_model(complaint_model, encoder_state)
     del encoder_state
     torch.cuda.empty_cache()
 
@@ -469,22 +503,25 @@ def train_transfer(
         logging_steps=20,
         eval_strategy='epoch' if not smoke_test else 'no',
         report_to='none',
-        seed=int(config.get('seed', 42)),
+        seed=seed,
         dataloader_num_workers=2,
         remove_unused_columns=False,
         disable_tqdm=False,
     )
 
-    target_train_ds = prepare_dataset(target_train, tokenizer, target_label2id, max_length)
-    target_valid_ds = prepare_dataset(target_valid, tokenizer, target_label2id, max_length)
-    target_test_ds  = prepare_dataset(target_test,  tokenizer, target_label2id, max_length)
+    complaint_train_ds = prepare_dataset(
+        complaint_train_records, tokenizer, complaint_label2id, max_length)
+    complaint_valid_ds = prepare_dataset(
+        complaint_valid_records, tokenizer, complaint_label2id, max_length)
+    complaint_test_ds  = prepare_dataset(
+        complaint_test_records,  tokenizer, complaint_label2id, max_length)
 
     target_trainer = Trainer(
-        model=target_model,
+        model=complaint_model,
         args=target_args,
-        train_dataset=target_train_ds,
-        eval_dataset=target_valid_ds if not smoke_test else None,
-        compute_metrics=compute_metrics_fn(target_id2label) if not smoke_test else None,
+        train_dataset=complaint_train_ds,
+        eval_dataset=complaint_valid_ds if not smoke_test else None,
+        compute_metrics=compute_metrics_fn(complaint_id2label) if not smoke_test else None,
         data_collator=DataCollatorForTokenClassification(
             tokenizer, pad_to_multiple_of=8),
     )
@@ -494,16 +531,18 @@ def train_transfer(
         target_trainer.train()
     except Exception as e:
         print(f"  [ERROR] Target fine-tuning failed: {e}")
-        del target_model
+        del complaint_model
         del target_trainer
         torch.cuda.empty_cache()
         raise
     target_time = time.time() - start_target
     print(f"  Target fine-tuning: {target_time:.1f}s")
 
-    # ---- Evaluate ----
+    # =============================================================
+    # Evaluate on test
+    # =============================================================
     print(f"  Evaluating on test set...")
-    test_output = target_trainer.predict(target_test_ds)
+    test_output = target_trainer.predict(complaint_test_ds)
     preds = np.argmax(test_output.predictions, axis=2)
 
     true_tags, pred_tags = [], []
@@ -511,8 +550,8 @@ def train_transfer(
         t_seq, p_seq = [], []
         for p, l in zip(seq_pred, seq_labels):
             if l != -100:
-                t_seq.append(target_id2label.get(l, 'O'))
-                p_seq.append(target_id2label.get(p, 'O'))
+                t_seq.append(complaint_id2label.get(l, 'O'))
+                p_seq.append(complaint_id2label.get(p, 'O'))
         true_tags.append(t_seq)
         pred_tags.append(p_seq)
 
@@ -544,6 +583,7 @@ def train_transfer(
     test_metrics = {
         'strategy': strategy_key,
         'model_name': model_name,
+        'aux_filter_source': aux_filter_source,
         'entity_precision': span_p,
         'entity_recall': span_r,
         'entity_f1': span_f1,
@@ -560,6 +600,11 @@ def train_transfer(
         'total_time_seconds': aux_time + target_time,
         'aux_epochs': aux_epochs,
         'target_epochs': target_epochs,
+        'num_aux_train': len(aux_train_records),
+        'num_aux_valid': len(aux_valid_records),
+        'num_complaint_train': len(complaint_train_records),
+        'num_complaint_valid': len(complaint_valid_records),
+        'num_complaint_test': len(complaint_test_records),
     }
 
     # Save metrics FIRST so they survive even if post-processing fails.
@@ -574,7 +619,7 @@ def train_transfer(
 
     try:
         pred_path = os.path.join(run_dir, 'test_predictions.jsonl')
-        save_predictions_jsonl(target_test, pred_tags, true_tags, pred_path)
+        save_predictions_jsonl(complaint_test_records, pred_tags, true_tags, pred_path)
         test_metrics['prediction_path'] = pred_path
     except Exception as e:
         post_processing_ok = False
@@ -582,7 +627,7 @@ def train_transfer(
 
     try:
         err_path = os.path.join(run_dir, 'error_analysis.csv')
-        save_error_analysis(target_test, pred_tags, true_tags, err_path)
+        save_error_analysis(complaint_test_records, pred_tags, true_tags, err_path)
         test_metrics['error_analysis_path'] = err_path
     except Exception as e:
         post_processing_ok = False
@@ -599,13 +644,17 @@ def train_transfer(
             f.write(f"Auxiliary time: {aux_time:.1f}s\n")
             f.write(f"Target time: {target_time:.1f}s\n")
             f.write(f"Total time: {aux_time + target_time:.1f}s\n")
+            f.write(f"Aux filter source: {aux_filter_source or '<all>'}\n")
+            f.write(f"Aux train: {len(aux_train_records)}, aux valid: {len(aux_valid_records)}\n")
+            f.write(f"Complaint train: {len(complaint_train_records)}, "
+                    f"valid: {len(complaint_valid_records)}, test: {len(complaint_test_records)}\n")
     except Exception as e:
         print(f"  [WARN] Failed to save train_log.txt: {e}")
 
     # Per-label report — flat lists only, never sequence-of-sequences.
     try:
         per_label_path = os.path.join(run_dir, 'per_label_report.csv')
-        label_list = list(target_label2id.keys())  # task-aware target labels
+        label_list = list(complaint_label2id.keys())
         per_label_report = save_per_label_report_from_tags(
             true_tags, pred_tags, labels=label_list, output_path=per_label_path)
         test_metrics['per_label_report_path'] = per_label_path
@@ -632,7 +681,7 @@ def train_transfer(
 
     # Free model memory
     del target_trainer
-    del target_model
+    del complaint_model
     torch.cuda.empty_cache()
 
     # Cleanup checkpoints
