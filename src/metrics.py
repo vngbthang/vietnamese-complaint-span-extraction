@@ -251,6 +251,133 @@ def save_per_label_report(
                     f'{vals["f1"]:.4f},{vals["support"]}\n')
 
 
+def flatten_label_sequences(
+    y_true: List[List[str]],
+    y_pred: List[List[str]],
+    ignore_label: Optional[str] = None,
+) -> Tuple[List[str], List[str]]:
+    """
+    Flatten a list of label sequences into two flat label lists.
+
+    This is required before passing data to sklearn.metrics.classification_report,
+    because sklearn no longer accepts nested sequence-of-sequences (legacy
+    multi-label representation).
+
+    Parameters
+    ----------
+    y_true : list[list[str]]
+        Gold BIO labels per token, grouped by record.
+    y_pred : list[list[str]]
+        Predicted BIO labels per token, grouped by record.
+    ignore_label : str, optional
+        If provided, drop token positions whose gold label equals this value
+        before flattening (useful for padding/subword markers).
+
+    Returns
+    -------
+    (flat_true, flat_pred) : two flat lists of equal length.
+    """
+    flat_true: List[str] = []
+    flat_pred: List[str] = []
+
+    for true_seq, pred_seq in zip(y_true, y_pred):
+        for t, p in zip(true_seq, pred_seq):
+            if ignore_label is not None and t == ignore_label:
+                continue
+            flat_true.append(t)
+            flat_pred.append(p)
+
+    return flat_true, flat_pred
+
+
+def compute_per_label_report(
+    y_true: List[List[str]],
+    y_pred: List[List[str]],
+    labels: List[str],
+) -> Dict[str, Dict[str, float]]:
+    """
+    Compute per-label precision/recall/F1/support using sklearn.
+
+    Always operates on FLAT lists, never on sequence-of-sequences,
+    to avoid sklearn's legacy multi-label deprecation error.
+
+    Parameters
+    ----------
+    y_true : list[list[str]]
+        Gold BIO labels per record (sequence of sequences).
+    y_pred : list[list[str]]
+        Predicted BIO labels per record (sequence of sequences).
+    labels : list[str]
+        Task-aware label set, e.g. ['O', 'B-COMP', 'I-COMP'].
+
+    Returns
+    -------
+    report : dict
+        {label_name: {precision, recall, f1, support}, ...}
+    """
+    flat_true, flat_pred = flatten_label_sequences(y_true, y_pred)
+
+    if not flat_true:
+        return {label: {'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'support': 0}
+                for label in labels}
+
+    sklearn_cls = sklearn_report(
+        flat_true,
+        flat_pred,
+        labels=labels,
+        digits=4,
+        output_dict=True,
+        zero_division=0,
+    )
+
+    report: Dict[str, Dict[str, float]] = {}
+    for label in labels:
+        if label in sklearn_cls:
+            row = sklearn_cls[label]
+            report[label] = {
+                'precision': float(row.get('precision', 0.0)),
+                'recall': float(row.get('recall', 0.0)),
+                'f1': float(row.get('f1', 0.0)),
+                'support': int(row.get('support', 0)),
+            }
+        else:
+            report[label] = {
+                'precision': 0.0,
+                'recall': 0.0,
+                'f1': 0.0,
+                'support': 0,
+            }
+    return report
+
+
+def save_per_label_report_from_tags(
+    y_true: List[List[str]],
+    y_pred: List[List[str]],
+    labels: List[str],
+    output_path: str,
+) -> Dict[str, Dict[str, float]]:
+    """
+    Compute per-label report from BIO tag sequences and write CSV.
+
+    This is the canonical entry point used by training scripts.
+    It flattens the sequences and calls sklearn.metrics.classification_report
+    on the flat lists only, avoiding the legacy multi-label error.
+    """
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    report = compute_per_label_report(y_true, y_pred, labels)
+
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write('label,precision,recall,f1,support\n')
+        for label in labels:
+            vals = report.get(label, {'precision': 0.0, 'recall': 0.0,
+                                       'f1': 0.0, 'support': 0})
+            f.write(f'{label},{vals["precision"]:.4f},{vals["recall"]:.4f},'
+                    f'{vals["f1"]:.4f},{vals["support"]}\n')
+
+    return report
+
+
 def save_error_analysis(
     records: List[Any],
     predictions: List[List[str]],

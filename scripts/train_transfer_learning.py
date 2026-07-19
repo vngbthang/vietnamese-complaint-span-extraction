@@ -39,11 +39,11 @@ from src.data_utils import load_split, filter_by_source, BioRecord, safe_get
 from src.metrics import (
     bio_to_spans,
     save_error_analysis,
+    save_per_label_report_from_tags,
     save_predictions_jsonl,
     seqeval_f1,
     seqeval_precision,
     seqeval_recall,
-    seqeval_report,
 )
 from src.tokenization_utils import encode_tokens_with_labels, encode_tokens_with_labels_sanity_check
 from src.trainer_utils import make_training_args, normalize_training_config
@@ -601,6 +601,18 @@ def train_transfer(
             f.write(f"Total time: {aux_time + target_time:.1f}s\n")
     except Exception as e:
         print(f"  [WARN] Failed to save train_log.txt: {e}")
+
+    # Per-label report — flat lists only, never sequence-of-sequences.
+    try:
+        per_label_path = os.path.join(run_dir, 'per_label_report.csv')
+        label_list = list(target_label2id.keys())  # task-aware target labels
+        per_label_report = save_per_label_report_from_tags(
+            true_tags, pred_tags, labels=label_list, output_path=per_label_path)
+        test_metrics['per_label_report_path'] = per_label_path
+        test_metrics['per_label'] = per_label_report
+    except Exception as e:
+        post_processing_ok = False
+        print(f"  [WARN] Failed to save per_label_report.csv: {e}")
 
     try:
         with open(test_metrics_path, 'w') as f:

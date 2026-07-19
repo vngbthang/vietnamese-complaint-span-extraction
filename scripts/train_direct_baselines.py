@@ -38,12 +38,11 @@ from src.data_utils import load_split, safe_get
 from src.metrics import (
     bio_to_spans,
     save_error_analysis,
-    save_per_label_report,
+    save_per_label_report_from_tags,
     save_predictions_jsonl,
     seqeval_f1,
     seqeval_precision,
     seqeval_recall,
-    seqeval_report,
 )
 from src.tokenization_utils import encode_tokens_with_labels, encode_tokens_with_labels_sanity_check
 from src.trainer_utils import make_training_args, normalize_training_config
@@ -446,18 +445,14 @@ def train_model(
         post_processing_ok = False
         print(f"  [WARN] Failed to save error_analysis.csv: {e}")
 
-    # Per-label report
+    # Per-label report — uses FLAT lists only, never sequence-of-sequences.
     try:
-        report = seqeval_report(true_tags_all, pred_tags_all, digits=4, output_dict=True)
         per_label_path = os.path.join(run_dir, 'per_label_report.csv')
-        save_per_label_report({
-            'per_label': {
-                k: {'precision': v.get('precision', 0), 'recall': v.get('recall', 0),
-                    'f1': v.get('f1', 0), 'support': v.get('support', 0)}
-                for k, v in report.items() if isinstance(v, dict)
-            }
-        }, per_label_path)
+        label_list = list(label2id.keys())  # task-aware: ['O', 'B-COMP', 'I-COMP']
+        per_label_report = save_per_label_report_from_tags(
+            true_tags_all, pred_tags_all, labels=label_list, output_path=per_label_path)
         test_metrics['per_label_report_path'] = per_label_path
+        test_metrics['per_label'] = per_label_report
     except Exception as e:
         post_processing_ok = False
         print(f"  [WARN] Failed to save per_label_report.csv: {e}")
@@ -550,6 +545,15 @@ def main():
     assert safe_get(test_records[0], "tokens") is not None, "test_records[0] has no tokens"
     assert safe_get(test_records[0], "bio_tags") is not None, "test_records[0] has no bio_tags"
     print("BioRecord access sanity check passed.")
+
+    # Per-label report sanity check (sklearn no longer accepts sequence-of-sequences)
+    from src.metrics import flatten_label_sequences, compute_per_label_report
+    _yt = [["O", "B-COMP", "I-COMP"], ["O"]]
+    _yp = [["O", "B-COMP", "O"], ["O"]]
+    _ft, _fp = flatten_label_sequences(_yt, _yp)
+    assert len(_ft) == 5 and len(_fp) == 5, "flatten_label_sequences sanity check failed"
+    _ = compute_per_label_report(_yt, _yp, labels=["O", "B-COMP", "I-COMP"])
+    print("Per-label report (flattened) sanity check passed.")
 
     models_to_run = args.models or list(config['models'].keys())
     label2id = {'O': 0, 'B-COMP': 1, 'I-COMP': 2}
