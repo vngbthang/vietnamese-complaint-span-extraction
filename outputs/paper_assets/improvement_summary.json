@@ -1,0 +1,15 @@
+{
+  "best_direct": {
+    "method": "phobert_weighted_ce",
+    "entity_f1": 0.447166921898928,
+    "model_name": "vinai/phobert-base-v2"
+  },
+  "best_transfer": {
+    "method": "uvisd4sa_then_complaint",
+    "entity_f1": 0.4716981132075472,
+    "model_name": "vinai/phobert-base-v2",
+    "auxiliary_data": "uvisd4sa"
+  },
+  "absolute_improvement": 0.024531191308619194,
+  "relative_improvement_percent": 5.485913672783677
+}

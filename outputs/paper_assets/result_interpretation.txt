@@ -1,0 +1,13 @@
+Result Interpretation
+=====================
+
+- Best direct baseline: **phobert_weighted_ce** (entity F1 = 0.4472).
+- Best transfer setting: **uvisd4sa_then_complaint** (entity F1 = 0.4717).
+- Absolute improvement: **+0.0245** entity F1.
+- Relative improvement: **+5.49%**.
+
+- UIT-ViSD4SA transfer (0.4717) outperforms CausaSent transfer (0.4230). Domain match between ATE on Vietnamese product reviews and the ViOCD-Span complaint domain appears to matter more than absolute ATE scale.
+
+- For `uvisd4sa_then_complaint`, token-level macro F1 (0.9137) is far above entity-level F1 (0.4717); a gap of 0.4420 suggests boundary errors (B-/I- tagging mistakes) are the dominant error type.
+
+Conclusion: encoder pretraining on auxiliary Vietnamese ATE data improves complaint-span extraction, with the largest gains coming from sources that match the target domain (UIT-ViSD4SA).

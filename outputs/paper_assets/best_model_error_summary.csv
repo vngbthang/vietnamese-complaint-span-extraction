@@ -1,0 +1,6 @@
+error_type,count,percent
+true_negative,349,63.57
+partial,130,23.68
+missed_all,41,7.47
+false_positive_only,20,3.64
+perfect,9,1.64

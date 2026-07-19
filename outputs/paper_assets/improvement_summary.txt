@@ -1,0 +1,7 @@
+Improvement Summary
+===================
+
+Best direct baseline    : phobert_weighted_ce  (Entity-F1 = 0.4472)
+Best transfer setting   : uvisd4sa_then_complaint  (Entity-F1 = 0.4717)
+Absolute improvement    : +0.0245
+Relative improvement    : +5.49%
