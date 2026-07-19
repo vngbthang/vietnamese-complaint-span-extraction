@@ -34,7 +34,7 @@ from transformers import (
 )
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from src.data_utils import load_split
+from src.data_utils import load_split, safe_get
 from src.metrics import (
     bio_to_spans,
     save_error_analysis,
@@ -419,34 +419,66 @@ def train_model(
         'train_time_seconds': train_time,
     }
 
-    pred_path = os.path.join(run_dir, 'test_predictions.jsonl')
-    save_predictions_jsonl(test_records, pred_tags_all, true_tags_all, pred_path)
+    # Save metrics FIRST so they survive even if post-processing fails.
+    test_metrics_path = os.path.join(run_dir, 'test_metrics.json')
+    try:
+        with open(test_metrics_path, 'w') as f:
+            json.dump(test_metrics, f, indent=2)
+    except Exception as e:
+        print(f"  [WARN] Failed to save test_metrics.json: {e}")
 
-    err_path = os.path.join(run_dir, 'error_analysis.csv')
-    save_error_analysis(test_records, pred_tags_all, true_tags_all, err_path)
+    # Post-processing: predictions and error analysis.
+    # Wrapped so that a failure here does not discard the metrics above.
+    post_processing_ok = True
+    try:
+        pred_path = os.path.join(run_dir, 'test_predictions.jsonl')
+        save_predictions_jsonl(test_records, pred_tags_all, true_tags_all, pred_path)
+        test_metrics['prediction_path'] = pred_path
+    except Exception as e:
+        post_processing_ok = False
+        print(f"  [WARN] Failed to save test_predictions.jsonl: {e}")
+
+    try:
+        err_path = os.path.join(run_dir, 'error_analysis.csv')
+        save_error_analysis(test_records, pred_tags_all, true_tags_all, err_path)
+        test_metrics['error_analysis_path'] = err_path
+    except Exception as e:
+        post_processing_ok = False
+        print(f"  [WARN] Failed to save error_analysis.csv: {e}")
 
     # Per-label report
-    report = seqeval_report(true_tags_all, pred_tags_all, digits=4, output_dict=True)
-    per_label_path = os.path.join(run_dir, 'per_label_report.csv')
-    save_per_label_report({
-        'per_label': {
-            k: {'precision': v.get('precision', 0), 'recall': v.get('recall', 0),
-                'f1': v.get('f1', 0), 'support': v.get('support', 0)}
-            for k, v in report.items() if isinstance(v, dict)
-        }
-    }, per_label_path)
+    try:
+        report = seqeval_report(true_tags_all, pred_tags_all, digits=4, output_dict=True)
+        per_label_path = os.path.join(run_dir, 'per_label_report.csv')
+        save_per_label_report({
+            'per_label': {
+                k: {'precision': v.get('precision', 0), 'recall': v.get('recall', 0),
+                    'f1': v.get('f1', 0), 'support': v.get('support', 0)}
+                for k, v in report.items() if isinstance(v, dict)
+            }
+        }, per_label_path)
+        test_metrics['per_label_report_path'] = per_label_path
+    except Exception as e:
+        post_processing_ok = False
+        print(f"  [WARN] Failed to save per_label_report.csv: {e}")
 
-    test_metrics['per_label_report_path'] = per_label_path
-    test_metrics['prediction_path'] = pred_path
-    test_metrics['error_analysis_path'] = err_path
+    # Re-save metrics with post-processing paths appended (if any succeeded).
+    try:
+        with open(test_metrics_path, 'w') as f:
+            json.dump(test_metrics, f, indent=2)
+    except Exception:
+        pass
 
-    with open(os.path.join(run_dir, 'test_metrics.json'), 'w') as f:
-        json.dump(test_metrics, f, indent=2)
-
-    # Mark completed
-    with open(os.path.join(run_dir, 'completed_result.json'), 'w') as f:
-        json.dump({'model_key': model_key, 'model_name': model_name,
-                   'test_metrics': test_metrics, 'train_time': train_time}, f, indent=2)
+    # Only mark completed if all post-processing succeeded.
+    if post_processing_ok:
+        try:
+            with open(os.path.join(run_dir, 'completed_result.json'), 'w') as f:
+                json.dump({'model_key': model_key, 'model_name': model_name,
+                           'test_metrics': test_metrics, 'train_time': train_time}, f, indent=2)
+        except Exception as e:
+            print(f"  [WARN] Failed to save completed_result.json: {e}")
+    else:
+        print("  [WARN] Post-processing had errors; completed_result.json not written.")
 
     # ---- Cleanup: delete model from trainer, free memory ----
     del trainer
@@ -511,6 +543,13 @@ def main():
     print(f"  Train: {len(train_records):,} records")
     print(f"  Valid: {len(valid_records):,} records")
     print(f"  Test:  {len(test_records):,} records")
+
+    # BioRecord access sanity check
+    assert safe_get(test_records[0], "id") is not None, "test_records[0] has no id"
+    assert safe_get(test_records[0], "text") is not None, "test_records[0] has no text"
+    assert safe_get(test_records[0], "tokens") is not None, "test_records[0] has no tokens"
+    assert safe_get(test_records[0], "bio_tags") is not None, "test_records[0] has no bio_tags"
+    print("BioRecord access sanity check passed.")
 
     models_to_run = args.models or list(config['models'].keys())
     label2id = {'O': 0, 'B-COMP': 1, 'I-COMP': 2}

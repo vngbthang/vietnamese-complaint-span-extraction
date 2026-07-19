@@ -49,6 +49,44 @@ class BioRecord:
         return out
 
 
+def safe_get(record: Any, key: str, default: Any = None) -> Any:
+    """
+    Safe attribute/key accessor that works for both dict records and BioRecord objects.
+
+    Returns getattr(record, key, default) for dataclass/object records,
+    or record.get(key, default) for dict records.
+    """
+    if record is None:
+        return default
+    if isinstance(record, dict):
+        return record.get(key, default)
+    return getattr(record, key, default)
+
+
+def record_to_dict(record: Any) -> Dict[str, Any]:
+    """
+    Convert a BioRecord object (or dict) into a plain dictionary.
+
+    Useful for post-processing code that expects dict access.
+    """
+    if record is None:
+        return {}
+    if isinstance(record, dict):
+        return record
+    return {
+        "id": getattr(record, "id", None),
+        "source": getattr(record, "source", None),
+        "task": getattr(record, "task", None),
+        "split": getattr(record, "split", None),
+        "text": getattr(record, "text", None),
+        "tokens": getattr(record, "tokens", None),
+        "token_offsets": getattr(record, "token_offsets", None),
+        "bio_tags": getattr(record, "bio_tags", None),
+        "spans": getattr(record, "spans", None),
+        "review_level_label": getattr(record, "review_level_label", None),
+    }
+
+
 def load_jsonl(path: str) -> List[BioRecord]:
     """Load records from a JSONL file."""
     records = []

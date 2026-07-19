@@ -9,6 +9,15 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 
 
+def _record_field(record: Any, key: str, default: Any = None) -> Any:
+    """Read a field from a record, supporting dict or dataclass/object."""
+    if record is None:
+        return default
+    if isinstance(record, dict):
+        return record.get(key, default)
+    return getattr(record, key, default)
+
+
 def analyze_token_errors(
     y_true: List[List[str]],
     y_pred: List[List[str]],
@@ -101,6 +110,73 @@ def save_full_analysis(
             'error_types': error_summary,
             'sample_errors': errors[:100],
         }, f, indent=2, ensure_ascii=False)
+
+
+def save_per_record_analysis(
+    records: List[Any],
+    y_true: List[List[str]],
+    y_pred: List[List[str]],
+    output_path: str,
+) -> None:
+    """Save per-record error analysis with id, gold_spans, pred_spans, error_type, note.
+
+    Works with both dict records and BioRecord dataclass objects.
+    """
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    keys = ['id', 'text', 'gold_spans', 'pred_spans', 'error_type', 'note']
+    with open(output_path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=keys)
+        writer.writeheader()
+        for rec, true_seq, pred_seq in zip(records, y_true, y_pred):
+            true_spans = bio_to_spans_inline(true_seq)
+            pred_spans = bio_to_spans_inline(pred_seq)
+
+            if true_spans == pred_spans:
+                error_type = 'none'
+                note = 'perfect'
+            elif not true_spans:
+                error_type = 'extra'
+                note = f'{len(pred_spans)} extra span(s)'
+            elif not pred_spans:
+                error_type = 'missing'
+                note = f'{len(true_spans)} missing span(s)'
+            else:
+                missing = set(true_spans) - set(pred_spans)
+                extra = set(pred_spans) - set(true_spans)
+                error_type = 'partial' if (missing or extra) else 'none'
+                note = f'missing={len(missing)}, extra={len(extra)}'
+
+            text_val = _record_field(rec, 'text', '') or ''
+            if not isinstance(text_val, str):
+                text_val = str(text_val)
+
+            writer.writerow({
+                'id': _record_field(rec, 'id', ''),
+                'text': text_val[:200],
+                'gold_spans': ' | '.join(f'[{s}:{e}:{t}]' for s, e, t in true_spans),
+                'pred_spans': ' | '.join(f'[{s}:{e}:{t}]' for s, e, t in pred_spans),
+                'error_type': error_type,
+                'note': note,
+            })
+
+
+def bio_to_spans_inline(seq: List[str]) -> List[Tuple[int, int, str]]:
+    """Convert a BIO tag sequence to (start, end, type) tuples."""
+    spans = []
+    j = 0
+    while j < len(seq):
+        tag = seq[j]
+        if tag.startswith('B-'):
+            label = tag[2:]
+            s = j
+            j += 1
+            while j < len(seq) and seq[j] == f'I-{label}':
+                j += 1
+            spans.append((s, j, label))
+        else:
+            j += 1
+    return spans
 
 
 def find_boundary_errors(

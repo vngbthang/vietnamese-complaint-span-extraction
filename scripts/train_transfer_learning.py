@@ -35,7 +35,7 @@ from transformers import (
 )
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from src.data_utils import load_split, filter_by_source, BioRecord
+from src.data_utils import load_split, filter_by_source, BioRecord, safe_get
 from src.metrics import (
     bio_to_spans,
     save_error_analysis,
@@ -562,32 +562,61 @@ def train_transfer(
         'target_epochs': target_epochs,
     }
 
-    # Save predictions and reports
-    pred_path = os.path.join(run_dir, 'test_predictions.jsonl')
-    save_predictions_jsonl(target_test, pred_tags, true_tags, pred_path)
-    err_path = os.path.join(run_dir, 'error_analysis.csv')
-    save_error_analysis(target_test, pred_tags, true_tags, err_path)
+    # Save metrics FIRST so they survive even if post-processing fails.
+    test_metrics_path = os.path.join(run_dir, 'test_metrics.json')
+    try:
+        with open(test_metrics_path, 'w') as f:
+            json.dump(test_metrics, f, indent=2)
+    except Exception as e:
+        print(f"  [WARN] Failed to save test_metrics.json: {e}")
+
+    post_processing_ok = True
+
+    try:
+        pred_path = os.path.join(run_dir, 'test_predictions.jsonl')
+        save_predictions_jsonl(target_test, pred_tags, true_tags, pred_path)
+        test_metrics['prediction_path'] = pred_path
+    except Exception as e:
+        post_processing_ok = False
+        print(f"  [WARN] Failed to save test_predictions.jsonl: {e}")
+
+    try:
+        err_path = os.path.join(run_dir, 'error_analysis.csv')
+        save_error_analysis(target_test, pred_tags, true_tags, err_path)
+        test_metrics['error_analysis_path'] = err_path
+    except Exception as e:
+        post_processing_ok = False
+        print(f"  [WARN] Failed to save error_analysis.csv: {e}")
 
     # Train log
-    with open(os.path.join(run_dir, 'train_log.txt'), 'w', encoding='utf-8') as f:
-        f.write(f"Strategy: {strategy_key}\n")
-        f.write(f"Model: {model_name}\n")
-        f.write(f"NO_CHECKPOINTS_SAVED=True\n")
-        f.write(f"Auxiliary epochs: {aux_epochs}\n")
-        f.write(f"Target epochs: {target_epochs}\n")
-        f.write(f"Auxiliary time: {aux_time:.1f}s\n")
-        f.write(f"Target time: {target_time:.1f}s\n")
-        f.write(f"Total time: {aux_time + target_time:.1f}s\n")
+    try:
+        with open(os.path.join(run_dir, 'train_log.txt'), 'w', encoding='utf-8') as f:
+            f.write(f"Strategy: {strategy_key}\n")
+            f.write(f"Model: {model_name}\n")
+            f.write(f"NO_CHECKPOINTS_SAVED=True\n")
+            f.write(f"Auxiliary epochs: {aux_epochs}\n")
+            f.write(f"Target epochs: {target_epochs}\n")
+            f.write(f"Auxiliary time: {aux_time:.1f}s\n")
+            f.write(f"Target time: {target_time:.1f}s\n")
+            f.write(f"Total time: {aux_time + target_time:.1f}s\n")
+    except Exception as e:
+        print(f"  [WARN] Failed to save train_log.txt: {e}")
 
-    test_metrics['prediction_path'] = pred_path
-    test_metrics['error_analysis_path'] = err_path
+    try:
+        with open(test_metrics_path, 'w') as f:
+            json.dump(test_metrics, f, indent=2)
+    except Exception:
+        pass
 
-    with open(os.path.join(run_dir, 'test_metrics.json'), 'w') as f:
-        json.dump(test_metrics, f, indent=2)
-
-    with open(os.path.join(run_dir, 'completed_result.json'), 'w') as f:
-        json.dump({'strategy': strategy_key, 'model_name': model_name,
-                   'test_metrics': test_metrics}, f, indent=2)
+    if post_processing_ok:
+        try:
+            with open(os.path.join(run_dir, 'completed_result.json'), 'w') as f:
+                json.dump({'strategy': strategy_key, 'model_name': model_name,
+                           'test_metrics': test_metrics}, f, indent=2)
+        except Exception as e:
+            print(f"  [WARN] Failed to save completed_result.json: {e}")
+    else:
+        print("  [WARN] Post-processing had errors; completed_result.json not written.")
 
     # Free model memory
     del target_trainer

@@ -252,12 +252,17 @@ def save_per_label_report(
 
 
 def save_error_analysis(
-    records: List[Dict[str, Any]],
+    records: List[Any],
     predictions: List[List[str]],
     ground_truths: List[List[str]],
     output_path: str,
 ) -> None:
-    """Save error analysis to CSV."""
+    """Save error analysis to CSV.
+
+    Works with both dict records and BioRecord dataclass objects.
+    """
+    from src.data_utils import safe_get
+
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
     rows = []
@@ -268,16 +273,20 @@ def save_error_analysis(
         missing = gt_spans - pred_spans
         extra = pred_spans - gt_spans
 
+        rec_text = safe_get(rec, 'text', '') or ''
+        if not isinstance(rec_text, str):
+            rec_text = str(rec_text)
+
         rows.append({
-            'id': rec.get('id', ''),
-            'source': rec.get('source', ''),
-            'split': rec.get('split', ''),
+            'id': safe_get(rec, 'id', ''),
+            'source': safe_get(rec, 'source', ''),
+            'split': safe_get(rec, 'split', ''),
             'num_gt_spans': len(gt_spans),
             'num_pred_spans': len(pred_spans),
             'correct': int(pred_spans == gt_spans),
             'missing_spans': ' | '.join(f'[{s}:{e}:{t}]' for s, e, t in missing) or '',
             'extra_spans': ' | '.join(f'[{s}:{e}:{t}]' for s, e, t in extra) or '',
-            'text': rec.get('text', '')[:200],
+            'text': rec_text[:200],
         })
 
     keys = ['id', 'source', 'split', 'num_gt_spans', 'num_pred_spans',
@@ -290,20 +299,25 @@ def save_error_analysis(
 
 
 def save_predictions_jsonl(
-    records: List[Dict[str, Any]],
+    records: List[Any],
     predictions: List[List[str]],
     ground_truths: List[List[str]],
     output_path: str,
 ) -> None:
-    """Save predictions as JSONL for later analysis."""
+    """Save predictions as JSONL for later analysis.
+
+    Works with both dict records and BioRecord dataclass objects.
+    """
+    from src.data_utils import safe_get
+
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, 'w', encoding='utf-8') as f:
         for rec, preds, gts in zip(records, predictions, ground_truths):
             out = {
-                'id': rec.get('id', ''),
-                'source': rec.get('source', ''),
-                'text': rec.get('text', ''),
-                'tokens': rec.get('tokens', []),
+                'id': safe_get(rec, 'id', ''),
+                'source': safe_get(rec, 'source', ''),
+                'text': safe_get(rec, 'text', ''),
+                'tokens': safe_get(rec, 'tokens', []),
                 'bio_tags_true': gts,
                 'bio_tags_pred': preds,
                 'spans_true': bio_to_spans(gts),
