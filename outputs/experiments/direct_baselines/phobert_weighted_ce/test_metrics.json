@@ -1,0 +1,41 @@
+{
+  "model_key": "phobert_weighted_ce",
+  "model_name": "vinai/phobert-base-v2",
+  "loss": "weighted_ce",
+  "num_train_epochs": 5,
+  "entity_precision": 0.4899328859060403,
+  "entity_recall": 0.4112676056338028,
+  "entity_f1": 0.44716692189892804,
+  "entity_tp": 146,
+  "entity_fp": 152,
+  "entity_fn": 209,
+  "token_precision_macro": 0.9128350550266694,
+  "token_recall_macro": 0.9086021505376344,
+  "token_f1_macro": 0.9107136842814322,
+  "token_f1_weighted": 0.9107136842814322,
+  "token_accuracy": 0.8471177944862155,
+  "train_time_seconds": 614.3352854251862,
+  "prediction_path": "outputs/experiments/direct_baselines/phobert_weighted_ce/test_predictions.jsonl",
+  "error_analysis_path": "outputs/experiments/direct_baselines/phobert_weighted_ce/error_analysis.csv",
+  "per_label_report_path": "outputs/experiments/direct_baselines/phobert_weighted_ce/per_label_report.csv",
+  "per_label": {
+    "O": {
+      "precision": 0.9015845824411135,
+      "recall": 0.9069446837842495,
+      "f1": 0.0,
+      "support": 11606
+    },
+    "B-COMP": {
+      "precision": 0.49643705463182897,
+      "recall": 0.4074074074074074,
+      "f1": 0.0,
+      "support": 513
+    },
+    "I-COMP": {
+      "precision": 0.7207556935817805,
+      "recall": 0.7250715959385576,
+      "f1": 0.0,
+      "support": 3841
+    }
+  }
+}

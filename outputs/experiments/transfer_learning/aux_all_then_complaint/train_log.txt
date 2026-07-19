@@ -1,0 +1,11 @@
+Strategy: aux_all_then_complaint
+Model: vinai/phobert-base-v2
+NO_CHECKPOINTS_SAVED=True
+Auxiliary epochs: 3
+Target epochs: 5
+Auxiliary time: 1100.7s
+Target time: 612.0s
+Total time: 1712.7s
+Aux filter source: <all>
+Aux train: 13270, aux valid: 1785
+Complaint train: 4387, valid: 548, test: 549

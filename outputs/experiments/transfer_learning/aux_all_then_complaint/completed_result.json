@@ -1,0 +1,53 @@
+{
+  "strategy": "aux_all_then_complaint",
+  "model_name": "vinai/phobert-base-v2",
+  "test_metrics": {
+    "strategy": "aux_all_then_complaint",
+    "model_name": "vinai/phobert-base-v2",
+    "aux_filter_source": null,
+    "entity_precision": 0.5033112582781457,
+    "entity_recall": 0.428169014084507,
+    "entity_f1": 0.4627092846270929,
+    "entity_tp": 152,
+    "entity_fp": 150,
+    "entity_fn": 203,
+    "token_f1_macro": 0.912856374394836,
+    "token_f1_weighted": 0.912856374394836,
+    "token_precision_macro": 0.9197208861188266,
+    "token_recall_macro": 0.9060935727157445,
+    "token_accuracy": 0.8506265664160401,
+    "aux_time_seconds": 1100.6808097362518,
+    "target_time_seconds": 611.978245973587,
+    "total_time_seconds": 1712.6590557098389,
+    "aux_epochs": 3,
+    "target_epochs": 5,
+    "num_aux_train": 13270,
+    "num_aux_valid": 1785,
+    "num_complaint_train": 4387,
+    "num_complaint_valid": 548,
+    "num_complaint_test": 549,
+    "prediction_path": "outputs/experiments/transfer_learning/aux_all_then_complaint/test_predictions.jsonl",
+    "error_analysis_path": "outputs/experiments/transfer_learning/aux_all_then_complaint/error_analysis.csv",
+    "per_label_report_path": "outputs/experiments/transfer_learning/aux_all_then_complaint/per_label_report.csv",
+    "per_label": {
+      "O": {
+        "precision": 0.8986303686168414,
+        "recall": 0.9158194037566776,
+        "f1": 0.0,
+        "support": 11606
+      },
+      "B-COMP": {
+        "precision": 0.5058275058275058,
+        "recall": 0.42300194931773877,
+        "f1": 0.0,
+        "support": 513
+      },
+      "I-COMP": {
+        "precision": 0.7372400756143668,
+        "recall": 0.7107524082270242,
+        "f1": 0.0,
+        "support": 3841
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+Strategy: causasent_then_complaint
+Model: vinai/phobert-base-v2
+NO_CHECKPOINTS_SAVED=True
+Auxiliary epochs: 3
+Target epochs: 5
+Auxiliary time: 469.6s
+Target time: 612.7s
+Total time: 1082.3s
+Aux filter source: causasent
+Aux train: 5647, aux valid: 700
+Complaint train: 4387, valid: 548, test: 549

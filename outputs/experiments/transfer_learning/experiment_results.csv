@@ -1,0 +1,4 @@
+strategy,experiment_name,model_name,auxiliary_data,entity_precision,entity_recall,entity_f1,token_macro_f1,token_accuracy,total_runtime,output_dir
+aux_all_then_complaint,aux_all_then_complaint,vinai/phobert-base-v2,UIT-ViSD4SA + CausaSent-ATE-v2,0.5033112582781457,0.428169014084507,0.4627092846270929,0.912856374394836,0.8506265664160401,1712.6590557098389,outputs/experiments/transfer_learning/aux_all_then_complaint
+causasent_then_complaint,causasent_then_complaint,vinai/phobert-base-v2,CausaSent-ATE-v2,0.4560260586319218,0.39436619718309857,0.4229607250755287,0.9091031692515172,0.8447368421052631,1082.2784249782562,outputs/experiments/transfer_learning/causasent_then_complaint
+uvisd4sa_then_complaint,uvisd4sa_then_complaint,vinai/phobert-base-v2,UIT-ViSD4SA,0.5338078291814946,0.4225352112676056,0.4716981132075472,0.9137113852566473,0.8515664160401003,1256.2875859737396,outputs/experiments/transfer_learning/uvisd4sa_then_complaint

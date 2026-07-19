@@ -1,0 +1,7 @@
+Model: xlm_roberta_ce
+Model name: xlm-roberta-base
+Loss: ce
+Epochs: 5
+Train time: 738.9s
+NO_CHECKPOINTS_SAVED=True
+Config: {"model_name": "xlm-roberta-base", "loss": "ce", "id2label": {"0": "O", "1": "B-COMP", "2": "I-COMP"}, "label2id": {"O": 0, "B-COMP": 1, "I-COMP": 2}}

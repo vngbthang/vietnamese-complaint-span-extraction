@@ -1,0 +1,11 @@
+Strategy: uvisd4sa_then_complaint
+Model: vinai/phobert-base-v2
+NO_CHECKPOINTS_SAVED=True
+Auxiliary epochs: 3
+Target epochs: 5
+Auxiliary time: 643.2s
+Target time: 613.1s
+Total time: 1256.3s
+Aux filter source: uvisd4sa
+Aux train: 7623, aux valid: 1085
+Complaint train: 4387, valid: 548, test: 549

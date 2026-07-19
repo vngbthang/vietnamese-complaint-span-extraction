@@ -1,0 +1,7 @@
+Model: phobert_ce
+Model name: vinai/phobert-base-v2
+Loss: ce
+Epochs: 5
+Train time: 607.9s
+NO_CHECKPOINTS_SAVED=True
+Config: {"model_name": "vinai/phobert-base-v2", "loss": "ce", "id2label": {"0": "O", "1": "B-COMP", "2": "I-COMP"}, "label2id": {"O": 0, "B-COMP": 1, "I-COMP": 2}}
