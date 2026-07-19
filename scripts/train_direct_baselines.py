@@ -551,7 +551,9 @@ def main():
     _yt = [["O", "B-COMP", "I-COMP"], ["O"]]
     _yp = [["O", "B-COMP", "O"], ["O"]]
     _ft, _fp = flatten_label_sequences(_yt, _yp)
-    assert len(_ft) == 5 and len(_fp) == 5, "flatten_label_sequences sanity check failed"
+    _expected_len = sum(len(seq) for seq in _yt)
+    assert len(_ft) == _expected_len and len(_fp) == _expected_len, \
+        "flatten_label_sequences sanity check failed"
     _ = compute_per_label_report(_yt, _yp, labels=["O", "B-COMP", "I-COMP"])
     print("Per-label report (flattened) sanity check passed.")
 
