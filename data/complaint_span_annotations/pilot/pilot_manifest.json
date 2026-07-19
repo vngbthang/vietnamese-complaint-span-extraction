@@ -1,0 +1,17 @@
+{
+  "pilot_records": 100,
+  "records_with_spans": 49,
+  "records_without_spans": 51,
+  "total_spans": 127,
+  "average_spans_per_record": 1.27,
+  "invalid_output_count": 50,
+  "invalid_span_text_count": 0,
+  "text_not_found_count": 27,
+  "json_parse_error_count": 0,
+  "api_error_count": 0,
+  "split_distribution": {
+    "train": 80,
+    "valid": 20
+  },
+  "model": "mistralai/mistral-small-4-119b-2603"
+}

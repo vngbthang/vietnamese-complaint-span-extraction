@@ -1,0 +1,34 @@
+{
+  "task": "aspect_term_extraction",
+  "bio_labels": [
+    "B-ASP",
+    "I-ASP",
+    "O"
+  ],
+  "total_records": 17958,
+  "total_spans": 45662,
+  "total_tokens": 1349490,
+  "roundtrip_errors": 10938,
+  "by_source": {
+    "uvisd4sa": {
+      "records": 10892,
+      "spans": 35355,
+      "records_with_spans": 10892
+    },
+    "causasent": {
+      "records": 7066,
+      "spans": 10307,
+      "records_with_spans": 7066
+    }
+  },
+  "bio_label_distribution": {
+    "B-ASP": 43673,
+    "I-ASP": 408944,
+    "O": 896873
+  },
+  "valid_bio_labels": {
+    "B-ASP": 43673,
+    "I-ASP": 408944,
+    "O": 896873
+  }
+}

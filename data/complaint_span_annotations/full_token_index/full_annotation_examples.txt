@@ -1,0 +1,152 @@
+======================================================================
+Step 3B: Full Annotation Examples
+======================================================================
+
+[1] ID: viocd_train_1  (train)
+    Review (74 tokens): 'mình góp ý thật nhé.. đừng bắt phải đăng nhập zalo nữa mình muốn tải nhạc mà khô'
+    Spans (5):
+      [1] tokens[43:47] chars[200,219] 'họ khó chịu cả 10..'
+      [2] tokens[5:11] chars[22,54] 'đừng bắt phải đăng nhập zalo nữa'
+      [3] tokens[12:21] chars[55,99] 'mình muốn tải nhạc mà không được lấy lại tôi'
+      [4] tokens[22:37] chars[100,176] 'không zalo thì gửi tin nhắn mất tiền được mã kích hoạt lại k'
+      [5] tokens[48:68] chars[220,315] 'lập trình viên viết ra ứng dụng ngày càng dễ sử dụng đằng nà'
+
+[2] ID: viocd_train_2  (train)
+    Review (46 tokens): 'máy khá đẹp,pin trâu vân tay nhạy nhận diện khuôn mặt nhanh nói chung ổn.tuy chơ'
+    Spans (1):
+      [1] tokens[19:25] chars[96,129] 'bị chậm khung hình không mượt lắm'
+
+[3] ID: viocd_train_3  (train)
+    Review (35 tokens): 'một mớ lỗi: không xem lại được bài test, không hiện link( ví dụ như là youtube k'
+    Spans (5):
+      [1] tokens[0:2] chars[0,11] 'một mớ lỗi:'
+      [2] tokens[9:11] chars[41,57] 'không hiện link('
+      [3] tokens[3:6] chars[12,30] 'không xem lại được'
+      [4] tokens[20:23] chars[92,110] 'không copy được từ'
+      [5] tokens[24:27] chars[111,130] 'không biết để dịch.'
+
+[4] ID: viocd_train_10  (train)
+    Review (80 tokens): 'tôi cập nhật lại aP hack não này từ hôm qua lúc tôi làm đã đến unit 40 nhưng lúc'
+    Spans (2):
+      [1] tokens[18:26] chars[71,105] 'nhưng lúc cập nhật về mở ra thì nó'
+      [2] tokens[54:65] chars[216,268] '1star   cho đến khi nào aP trở về trạng thái ban đầu'
+
+[5] ID: viocd_train_13  (train)
+    Review (76 tokens): 'chào tiki, bạn giao thiếu hàng của tôi, thậm chí là cả giấy biL dán lên kiện cũn'
+    Spans (3):
+      [1] tokens[3:7] chars[15,39] 'giao thiếu hàng của tôi,'
+      [2] tokens[24:31] chars[106,136] 'vẫn đề thu giá tiền 2 món sao.'
+      [3] tokens[50:63] chars[217,275] 'sau khi mở ra và phát hiện lỗi này thì mình rất thất vọng,'
+
+[6] ID: viocd_train_14  (train)
+    Review (44 tokens): 'giao đủ sản phẩm... mong là lần sau  cửa hàng  giao hàng nên gói sản phẩm vào bọ'
+    Spans (3):
+      [1] tokens[0:2] chars[0,11] 'giao đủ sản'
+      [2] tokens[21:28] chars[100,134] 'cứ để không lông trong hộp như vậy'
+      [3] tokens[30:38] chars[138,182] 'cái hộp đựng thì không gian chứa quá rộng...'
+
+[7] ID: viocd_train_16  (train)
+    Review (72 tokens): 'mới dùng 2 ngày chưa thấy hiệu  quả  lắm.  được  cái nhìn da min và láng hơn. ti'
+    Spans (1):
+      [1] tokens[26:33] chars[121,159] 'mỗi tội lazada vận chuyển hàng tẹ quá,'
+
+[8] ID: viocd_train_19  (train)
+    Review (71 tokens): 'em có một tài khoản lần đầu em bị mất xim nên em đã thêm số điện thoại mới. thế '
+    Spans (3):
+      [1] tokens[8:10] chars[31,41] 'bị mất xim'
+      [2] tokens[25:30] chars[98,126] 'đổi mật khẩu quên khuấy mất.'
+      [3] tokens[41:51] chars[166,207] 'nó cứ đòi gửi mã về số điện thoại cũ kia.'
+
+[9] ID: viocd_train_20  (train)
+    Review (72 tokens): 'game khá hay, nhưng hơi mất cân bằng giữa các phái. cần giảm sức mạnh của phái n'
+    Spans (4):
+      [1] tokens[4:10] chars[20,51] 'hơi mất cân bằng giữa các phái.'
+      [2] tokens[35:42] chars[165,198] 'tỉ lệ ra tướng tím cũng khá thấp.'
+      [3] tokens[47:59] chars[215,270] 'màn chơi hơi đuối nên lâu lắm mới qua được một màn boS.'
+      [4] tokens[11:34] chars[52,164] 'cần giảm sức mạnh của phái người thú đặc biệt là brutus xem '
+
+[10] ID: viocd_train_22  (train)
+    Review (56 tokens): 'cập nhật không gì vào game không  được , load 79% đứng hình luôn. một sai lầm củ'
+    Spans (4):
+      [1] tokens[9:13] chars[41,65] 'load 79% đứng hình luôn.'
+      [2] tokens[0:7] chars[0,38] 'cập nhật không gì vào game không  được'
+      [3] tokens[14:31] chars[66,148] 'một sai lầm của các game là đưa thêm nhiều tính năng, cập nh'
+      [4] tokens[34:55] chars[160,262] 'phải hoàn thành nhiều nhiệm vụ, mà số không ít người chơi kh'
+
+[11] ID: viocd_train_30  (train)
+    Review (72 tokens): 'chậm cập nhật. game giật lag rất nhiều rất với các bản khác. gặp hack nhiều thêm'
+    Spans (7):
+      [1] tokens[0:2] chars[0,14] 'chậm cập nhật.'
+      [2] tokens[13:15] chars[61,75] 'gặp hack nhiều'
+      [3] tokens[60:63] chars[264,278] 'vẫn im re vậy.'
+      [4] tokens[39:42] chars[173,190] 'chậm cập nhập quá'
+      [5] tokens[4:7] chars[20,38] 'giật lag rất nhiều'
+
+[12] ID: viocd_train_37  (train)
+    Review (80 tokens): 'game hay nhưng lại yêu cầu nâng cấp môn khách với ải và các hài nhi khó khăn nân'
+    Spans (5):
+      [1] tokens[4:7] chars[19,35] 'yêu cầu nâng cấp'
+      [2] tokens[18:25] chars[77,111] 'nâng cấp khi không còn tiền ải thì'
+      [3] tokens[63:71] chars[263,300] 'đồ hoạ thăm hỏi với con cái không đẹp'
+      [4] tokens[50:59] chars[210,250] 'game thì chán mà lại như thế thì dẹp đi.'
+      [5] tokens[26:49] chars[112,209] 'eo có con lính nuôi con mà đợi lâu quá trời hoạt đan thì chỉ'
+
+[13] ID: viocd_train_39  (train)
+    Review (31 tokens): 'mình đặt là loại chai xịt như này nhưng hàng nhận lại là chai đóng nắp. và không'
+    Spans (2):
+      [1] tokens[9:15] chars[40,71] 'hàng nhận lại là chai đóng nắp.'
+      [2] tokens[17:24] chars[75,112] 'không có quà tặng kèm như khuyến mãi.'
+
+[14] ID: viocd_train_43  (train)
+    Review (73 tokens): 'càng ngày càng tệ, từ khi không cho kiểm tra hàng trước, luôn là sản phẩm kém ch'
+    Spans (6):
+      [1] tokens[0:2] chars[0,14] 'càng ngày càng'
+      [2] tokens[14:18] chars[65,89] 'sản phẩm kém chất lượng,'
+      [3] tokens[23:27] chars[105,131] 'không bằng miếng dẽ lâu...'
+      [4] tokens[42:50] chars[190,227] 'nhưng khi giải quyết thì âu ơ ví dầu,'
+      [5] tokens[51:59] chars[228,265] 'đổi đi đổi lại 3 tháng vẫn chưa xong,'
+
+[15] ID: viocd_train_44  (train)
+    Review (72 tokens): 'game có quá nhiều thành phần không tốt, như những người lớn tuổi hay nhỏ tuổi đề'
+    Spans (6):
+      [1] tokens[49:51] chars[225,237] 'nhiều tố cáo'
+      [2] tokens[59:61] chars[272,287] 'nghiêm khắc hơn'
+      [3] tokens[19:22] chars[91,110] 'thành vi không tốt,'
+      [4] tokens[2:7] chars[8,39] 'quá nhiều thành phần không tốt,'
+      [5] tokens[39:47] chars[182,219] 'khoá aC nếu 3 phiếu tố cao nhiều lần,'
+
+[16] ID: viocd_train_46  (train)
+    Review (57 tokens): 'ứng dụng phiên bản về sau tệ quá. bắt cập nhật dữ liệu oFline suốt. đề nghị bỏ c'
+    Spans (6):
+      [1] tokens[6:7] chars[26,33] 'tệ quá.'
+      [2] tokens[32:34] chars[140,153] 'coi như hỏng.'
+      [3] tokens[54:56] chars[243,257] 'phiền phức quá'
+      [4] tokens[35:39] chars[154,176] 'có ứng dụng như không.'
+      [5] tokens[8:14] chars[34,67] 'bắt cập nhật dữ liệu oFline suốt.'
+
+[17] ID: viocd_train_50  (train)
+    Review (33 tokens): 'trên  quả người cáo có quà tặng, mà giao hàng không có. không hài lòng chút nào '
+    Spans (2):
+      [1] tokens[7:11] chars[33,55] 'mà giao hàng không có.'
+      [2] tokens[12:17] chars[56,83] 'không hài lòng chút nào .dù'
+
+[18] ID: viocd_train_51  (train)
+    Review (58 tokens): 'không hiểu nổi. ứng dụng 4, 5star   nhưng có thể tự huỷ đơn hàng của người mua v'
+    Spans (4):
+      [1] tokens[53:57] chars[241,264] 'mất thời gian của nhau.'
+      [2] tokens[48:52] chars[215,240] 'không tin tưởng được nữa.'
+      [3] tokens[8:17] chars[42,82] 'có thể tự huỷ đơn hàng của người mua với'
+      [4] tokens[18:33] chars[83,148] 'lỗi lưu kho, quăng cho một mã giảm giá 5% và lời xin lỗi tự '
+
+[19] ID: viocd_train_53  (train)
+    Review (73 tokens): 'tôi rất thích game này nhưng càng lúc cấu hình game càng nặng, thật sự rất lag l'
+    Spans (2):
+      [1] tokens[6:17] chars[29,84] 'càng lúc cấu hình game càng nặng, thật sự rất lag luôn,'
+      [2] tokens[18:47] chars[85,209] 'máy bên tôi lúc nào cũng trễ hơn bên đồng đội vài giây, có k'
+
+[20] ID: viocd_train_54  (train)
+    Review (18 tokens): 'nói là  được  tặng khi mua hoá đơn 486k trở lên mà không thấy có gì.rất thất vọn'
+    Spans (1):
+      [1] tokens[12:17] chars[51,82] 'không thấy có gì.rất thất vọng.'
+
+Total shown: 20

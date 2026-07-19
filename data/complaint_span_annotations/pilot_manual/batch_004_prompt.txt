@@ -1,0 +1,140 @@
+You are annotating Vietnamese customer reviews for complaint span extraction.
+
+Task:
+Extract all complaint spans from each given review.
+
+Definition:
+A complaint span is a contiguous text segment that directly expresses dissatisfaction, product/service failure, inconvenience, unmet expectation, or negative customer experience.
+
+Rules:
+1. Extract only exact substrings from the original review.
+2. Do not rewrite, normalize, translate, or paraphrase.
+3. Do not infer implicit complaints.
+4. Do not extract aspect terms alone unless the phrase itself expresses a complaint.
+   Bad: "pin" (just an aspect term)
+   Good: "pin tụt quá nhanh" (aspect + complaint)
+5. Prefer minimal but complete complaint expressions.
+6. Multiple complaint spans are allowed.
+7. Return an empty list if there is no explicit complaint expression.
+8. Every returned span text must appear exactly in the original review.
+9. Return text only — NO character offsets.
+
+Required output format — return a JSON array:
+[
+  {
+    "id": "record_id",
+    "complaint_spans": [
+      {"text": "complaint expression 1"},
+      {"text": "complaint expression 2"}
+    ]
+  },
+  ...
+]
+
+IMPORTANT:
+- Your response must contain ONLY the JSON array. No explanation, no markdown, no code fences.
+- Each record's id and text are provided below.
+
+BATCH 004 — 25 records
+============================================================
+
+[1] ID: viocd_train_251
+    Split: train
+    Text: game thi cux hay . nhung ma tôi thich parkout . nhung tôi tai map parkout sao no không  được  . game tôi tai = 200k đi đéo mẹ . admin xem rồi sua lai loi game  gì đăng @@
+
+[2] ID: viocd_train_2462
+    Split: train
+    Text: tính đến thời điểm hiện tại thì tôi đã mất 6 tài khoản facebook rồi . một phần là nhờ hacker , một phần là nhờ xác nhận tài khoản . tôi có đăng nhập hay làm gì sai đâu mà cứ mất tài khoản hoài , cứ mỗi lần tôi bị vậy là phải tạo tài khoản lại , đã thế còn mất công đi tìm lại bạn mình để kết bạn lại , ai ai cũng than phiền... bài đánh giá đầy đủ
+
+[3] ID: viocd_train_3127
+    Split: train
+    Text: giao hạn sử dụng cũ sản xuất tận một năm trc. có mùi không thơm như sử dụng trước đó. mùi kì kì. mong  cửa hàng  phản hồi
+
+[4] ID: viocd_train_2094
+    Split: train
+    Text: 1m60 46 không mặc  không  vừa quần ngắn chặt
+
+[5] ID: viocd_train_496
+    Split: train
+    Text: tôi một người xài 5 năm facebook lite rất là thích. rồi càng ngày càng tệ. mỗi lần bị đăng xuất hay lí do gì không biết vào ứng dụng rất là lâu. có khi một ngày trời vẫn không vào được cứ một chấm đang tải trong khi wifi rất mạnh. tốc độ thì vẫn vậy cải thiện đâu chả thấy, càng tệ thêm.
+
+[6] ID: viocd_validation_205
+    Split: valid
+    Text: hàng chính hãnh, ngoài cảm biến vân tay không nhậy nhà thì mọi thứ còn lại quá tốt rất với già thành
+
+[7] ID: viocd_validation_311
+    Split: valid
+    Text: chưa thấy kết  quả  khi dùng
+
+[8] ID: viocd_validation_495
+    Split: valid
+    Text: đang chơi thì bị treo máy do mất kết nối, trong khi mạng và các thiết bị khác vẫn kết nối bình thường, chơi game khác cũng không bị trường hợp này, phải tắt máy khởi động lại mới hết! đề nghị nhà phát hành xem lại!
+
+[9] ID: viocd_validation_390
+    Split: valid
+    Text: đặt số 36 mà giao số 37, không đúng gì hết. rồi sao mang vừa. đặt hàng một nơi giao không đúng yêu cầu số dép gì hết. 😠😠
+
+[10] ID: viocd_validation_459
+    Split: valid
+    Text: game hay, trang phục đẹp, cốt truyện hấp dẫn. nhưng mumu cần ra ít sự kiện thôi vì cứ dồn dập sự kiện như thế thì kim cương moi đâu ra đây. nên cho thêm chức năng là các star có thể nhắn tin với nhau và thi đấu với nhau.  cửa hàng  bán nhiều trang phục hơn nữa. khi các star thi đấu thua, mumu hãy an ủi, đ... bài đánh giá đầy đủ
+
+[11] ID: viocd_validation_145
+    Split: valid
+    Text: không được đồng kiểm hàng nên dễ mua phải hàng không đúng  quả người cáo, dù rằng nếu kiểm hàng thì cũng có những người sẽ không nhận hàng và người bán phải chịu chi phí ship, cái gì cũng có 2 mặt, nhưng lazada không bảo vệ người tiêu dùng thì tôi đã chuyển sang mua hàng ở  cửa hàng E ( được kiểm hàng trước khi ... bài đánh giá đầy đủ
+
+[12] ID: viocd_validation_262
+    Split: valid
+    Text: sao mình mua 3 tuýp sữa rửa mặt luôn mà không có quà tặng kèm ạ, mình mua trong ngày 273 luôn mà
+
+[13] ID: viocd_validation_139
+    Split: valid
+    Text: grab hãy xem lại nếu không sẽ mất hoàn toàn khách hàng. đã cho khách sử dụng mã khuyến mãi và grab pay thì tài xế phải chạy cho đàng hoàng. chứ không phải khách đặt cho đã. nhìn trong bản đồ là đang ở gần địa chỉ mình đặt nhưng lại viện lý do xa quá không chạy. hoặc là không gọi báo cho khách biết l... bài đánh giá đầy đủ
+
+[14] ID: viocd_validation_241
+    Split: valid
+    Text: có khuyết và ưu điểm khuyết không chèn giấy hay nylon bóng khí. dòng máy này không có tai nghe. ưu điểm giao hàng hoả tốc: 19g30' đặt nhận hàng 13g30' hôm sau, quá nhanh. máy nguyên seal tem chính hảng   samsung việt nam  không gì phải phàn nàn, cực kỳ hài lòng. đang đợi kích hoạt bảo hành cám ơn  cửa hàng , cám ơn lazada giao hàng nhanh.
+
+[15] ID: viocd_validation_529
+    Split: valid
+    Text: tặng thì tặng không tặng thì thôi chơi kiểu ma trận khách hàng bó tay..tóm lại lần đầu mua hàng thất vọng
+
+[16] ID: viocd_validation_261
+    Split: valid
+    Text: tiki phát sinh lỗi lưu kho huỷ đơn hàng đã thanh toán trước của tôi. email thông báo sẽ hoàn tiền từ 1-3 ngày nhưng đến ngày thứ 3 tôi gọi điện lên tổng đài thì báo sẽ chuyển đến các bộ phận liên quan giải quyết. email thì không trả lời. cực thất vọng.
+
+[17] ID: viocd_validation_424
+    Split: valid
+    Text: đồ hoạ tuyệt vời, tương tác với trai nhân sống động, game chơi vui, không lag, không có quá nhiều nhiệm vụ chồng chất để một ngày làm mãi không hết như các game khác, chỉ là admin thêm cho tính năng bỏ qua ải với, mỗi lần đợi đánh xong trận hơi mất kiên nhẫn
+
+[18] ID: viocd_validation_394
+    Split: valid
+    Text: ngồi một chỗ mà cũng bắt quá trời pokemon positive ) mà lên level rất là chậm:(( mình nói trước nhá,game này không dành cho mấy đứa trẻ trâu không biết chơi mà còn chửi bới cái game này,game này chỉ dành cho những bạn biết kiêng nhẫn chứ không dành cho thằng nào không biết chơi mà cứ chửi,chửi... game nó tội ... bài đánh giá đầy đủ
+
+[19] ID: viocd_validation_364
+    Split: valid
+    Text: tôi đã nhập đúng mã xác nhận điện thoại nhưng nó ghi là tôi đã nhập sai và hết lượt thử! tôi tạo tài khoản mới = email nhưng sau khi đăng nhập nó bắt buộc phải xác thực số điện thoại !
+
+[20] ID: viocd_validation_213
+    Split: valid
+    Text: gặp vấn đề trong việc bổ sung vị trí cho bài viết. ứng dụng chỉ cho chọn những vị trí gần đó, tại thời điểm đăng bài. nhiều khi sau một chuyến đi chơi, mọi người về nhà rồi mới đăng bài, nhưng bật vị trí lên thì ứng dụng chỉ cho chọn những vị trí gần đó chứ không cho chọn địa điểm mà bức ảnh hay vid... bài đánh giá đầy đủ
+
+[21] ID: viocd_validation_138
+    Split: valid
+    Text: thay đổi chóng mặt quá, chưa kịp quen đã thay đổi tiếp rồi, giờ còn mất luôn đóng góp của người dùng (android). từ điển thì chủ yếu cần đủ nghĩa, cần gì thay giao diện xoành xoạch suốt ngày
+
+[22] ID: viocd_validation_506
+    Split: valid
+    Text: chỗ đế dép bị lệch và không nhấn xuống được, thêm phần keo bị hở nhiều chỗ. hơi thất vọng nhưng bù lại mình thấy  cửa hàng  cũng rất nhiệt tình, cảm ơn  cửa hàng
+
+[23] ID: viocd_validation_490
+    Split: valid
+    Text: rất tốt nhưng phải đăng nhập nên không thích
+
+[24] ID: viocd_validation_86
+    Split: valid
+    Text: kêu là hàng chính hãng usa, khi check tem lại là made in china
+
+[25] ID: viocd_validation_46
+    Split: valid
+    Text: đồ đẹp nhưng  cửa hàng  giao em sai mẫ
+

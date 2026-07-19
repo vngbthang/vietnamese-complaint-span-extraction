@@ -1,0 +1,4 @@
+split,records,positive_records,negative_records,records_with_spans,records_without_spans,total_complaint_spans,total_tokens,avg_tokens_per_record,avg_spans_per_positive,O_count,B-COMP_count,I-COMP_count,O_pct,B-COMP_pct,I-COMP_pct
+train,4387,2292,2095,1458,2929,4141,126227,28.77,1.81,93031,4141,29055,73.70,3.28,23.02
+valid,548,283,265,204,344,583,16122,29.42,2.06,11398,583,4141,70.70,3.62,25.69
+test,549,279,270,180,369,513,16015,29.17,1.84,11661,513,3841,72.81,3.20,23.98

@@ -1,0 +1,20 @@
+{
+  "pilot_records": 100,
+  "records_with_spans": 55,
+  "records_without_spans": 45,
+  "total_raw_token_spans": 145,
+  "total_valid_spans": 144,
+  "average_valid_spans_per_record": 1.44,
+  "invalid_json_outputs": 0,
+  "invalid_token_range_count": 1,
+  "out_of_range_count": 1,
+  "token_not_integer_count": 0,
+  "invalid_span_format_count": 0,
+  "nested_span_removed_count": 0,
+  "missing_output_records": 0,
+  "split_distribution": {
+    "train": 80,
+    "valid": 20
+  },
+  "model": "mistralai/mistral-small-4-119b-2603"
+}

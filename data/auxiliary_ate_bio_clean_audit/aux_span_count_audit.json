@@ -1,0 +1,117 @@
+{
+  "audit_type": "Step 5A.1 auxiliary ATE span count consistency audit",
+  "summary": {
+    "step2_reported_total_spans": 45662,
+    "num_spans_field_sum": 45662,
+    "actual_orig_derived_spans": 43614,
+    "cleaned_derived_spans": 43614,
+    "apparent_discrepancy": 2048,
+    "real_discrepancy": 2048,
+    "actual_diff_after_cleaning": 0,
+    "conclusion": "CONCLUSION_A"
+  },
+  "conclusion_A_explanation": "Step 5A.1 span count is CORRECT. Step 2 reported total_spans=45,662 which came from the num_spans field, but the actual spans derivable from BIO tags = 43614. The num_spans field was inflated by 2048 across 1857 records. Step 5A removed 0 empty spans. The true span count difference between original and cleaned is 0, all explained by empty_span_removed. No spans were accidentally merged or dropped.",
+  "original_data": {
+    "total_records": 17958,
+    "total_tokens": 1349490,
+    "total_spans_derived_from_bio": 43614,
+    "total_num_spans_field": 45662,
+    "spans_inflated_by_num_spans_field": 2048,
+    "records_with_num_spans_mismatch": 1857,
+    "bio_label_distribution": {
+      "O": 896873,
+      "B-ASP": 43673,
+      "I-ASP": 408944
+    },
+    "by_source": {
+      "uvisd4sa": {
+        "records": 10892,
+        "spans": 33625
+      },
+      "causasent": {
+        "records": 7066,
+        "spans": 9989
+      }
+    },
+    "by_split": {
+      "train": {
+        "records": 13270,
+        "spans": 31568
+      },
+      "valid": {
+        "records": 1785,
+        "spans": 4387
+      },
+      "test": {
+        "records": 2903,
+        "spans": 7659
+      }
+    }
+  },
+  "cleaned_data": {
+    "total_records": 17958,
+    "total_tokens": 1349490,
+    "total_spans": 43614,
+    "bio_label_distribution": {
+      "O": 896932,
+      "B-ASP": 43614,
+      "I-ASP": 408944
+    },
+    "by_source": {
+      "uvisd4sa": {
+        "records": 10892,
+        "spans": 33625
+      },
+      "causasent": {
+        "records": 7066,
+        "spans": 9989
+      }
+    },
+    "by_split": {
+      "train": {
+        "records": 13270,
+        "spans": 31568
+      },
+      "valid": {
+        "records": 1785,
+        "spans": 4387
+      },
+      "test": {
+        "records": 2903,
+        "spans": 7659
+      }
+    }
+  },
+  "difference": {
+    "spans_removed": 0,
+    "records_affected": 0,
+    "by_source": {
+      "uvisd4sa": 0,
+      "causasent": 0
+    },
+    "by_split": {
+      "train": 0,
+      "valid": 0,
+      "test": 0
+    }
+  },
+  "whitespace_tokens": {
+    "records_with_whitespace_tokens": 17958,
+    "total_whitespace_tokens": 626392,
+    "note": "All 17958 records contain whitespace tokens. This is expected — tokenization is character-level split on whitespace, so spaces become individual tokens. No issue."
+  },
+  "bio_validity": {
+    "i_asp_not_following_b_asp": 0,
+    "records_dropped": 0,
+    "note": "Original BIO is valid. No I-ASP sequence errors. All 17958 records preserved."
+  },
+  "cleaning_actions": {
+    "total": 59,
+    "by_action": {
+      "invalid_span_removed": 59
+    },
+    "by_reason": {
+      "empty_span_text": 59
+    }
+  }
+}

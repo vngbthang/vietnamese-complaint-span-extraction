@@ -1,0 +1,10 @@
+id,reason,predicted_value,review_text
+viocd_train_1466,start_token_gt_end_token,"[24, 23]","các hòm thư hỗ trợ trả lời như kiểu mặc định vậy, không hề có tâm hay trả lời vào trọng tâm câu hỏi. chính sách giao hàng là giao hàng tận nơi đúng ko, nhưng tại sao lại phải ra cửa hàng để lấy. người ta không có thời gian đi mua nên mới đặt hàng tận nơi, mà đến lúc giao hàng thì quý khách ra cửa hàng để ... bài đánh giá đầy đủ"
+viocd_train_1484,token_out_of_range,"s=13, e=17, n=17","vải mềm nhưng vải mỏng,đường may tệ,chỉ lòng thòng tùm lum. quan thi may dáy quá dài."
+viocd_train_2481,missing_output,HTTP 500,mình sử dụng điện thoại samsung a8 2018 tại cuộc gọi ổn đinh nhưng sao thực hiện cuộc gọi không mở được loa nhỏ. có người gọi đến nhiều lúc không thể nghe. bất tiện
+viocd_train_3984,token_out_of_range,"s=12, e=14, n=14",giao hàng nhanh chất liệu ổn mùi không được dễ chịu form không đẹp
+viocd_train_4219,token_out_of_range,"s=11, e=15, n=15",sản phẩm không đẹp . mua màu trắng giao màu xanh. chất lượng không tốt
+viocd_train_4279,token_out_of_range,"s=0, e=2, n=2",nhu cứt
+viocd_validation_153,token_out_of_range,"s=54, e=59, n=59","xử lý cho khách hàng không tốt,đặt hàng thanh toán xong báo chưa có đổi món khác thừa tiền sẽ hoàn trả vào tài khoảng ví nhưng chờ hoài không thấy. liên hệ nhắn tin lên hệ thống nowvn thì không trả lời,gọi điện đến văn phòng không bắt máy...không đáng bao nhiêu đừng để mang tiếng lừa đảo."
+viocd_validation_326,token_out_of_range,"s=12, e=14, n=14",không giống mô tả. vải mỏng không phải voan xoè như hình. thất vọng
+viocd_test_503,token_out_of_range,"s=2, e=12, n=12",vải xấu. hàng gửi về không đúng màu cũng không giống hình.

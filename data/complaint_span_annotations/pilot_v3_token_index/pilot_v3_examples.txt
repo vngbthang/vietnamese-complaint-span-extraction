@@ -1,0 +1,76 @@
+======================================================================
+Step 3A.2: Token-Index Annotation Examples (v2)
+======================================================================
+
+[1] ID: viocd_train_2143  (train)
+    Review (66 tokens): 'game không hề cân bằng, nạp và không nạp quá khác biệt, hệ thống tìm trận không '
+    Spans (7):
+      [1] tokens[63:65] chars[276,286] 'hút máu à?'
+      [2] tokens[22:26] chars[102,120] 'gặp 10k 3 ván liền'
+      [3] tokens[0:4] chars[0,23] 'game không hề cân bằng,'
+      [4] tokens[45:51] chars[196,229] 'vng không quan tâm đến người chơi'
+      [5] tokens[53:61] chars[233,270] 'chỉ quan tâm đến tiền thu từ nạp thẻ?'
+
+[2] ID: viocd_train_1925  (train)
+    Review (73 tokens): 'aP có một số nhược điểm: thứ một là nhiều bài hạn chế, tìm không thấy. thứ 2 là '
+    Spans (3):
+      [1] tokens[4:15] chars[13,70] 'nhược điểm: thứ một là nhiều bài hạn chế, tìm không thấy.'
+      [2] tokens[19:34] chars[80,151] 'việc aP tự động đăng nhập tài khoản zalo mỗi lần truy cập là'
+      [3] tokens[38:64] chars[165,296] 'khi tôi dùng các ứng dụng chỉnh video như kinemaster, inshot'
+
+[3] ID: viocd_train_1757  (train)
+    Review (32 tokens): 'kem nền thì ổn rồi mà quà thì quá tệ tặng cũng có tâm chút đi để màu này tặng câ'
+    Spans (2):
+      [1] tokens[26:27] chars[102,112] 'xài, thiệt'
+      [2] tokens[6:9] chars[22,36] 'quà thì quá tệ'
+
+[4] ID: viocd_train_1058  (train)
+    Review (75 tokens): 'mỗi lần cập nhật lại tốn mấy trăm mình dung lượng. lần này cũng vậy chả lẻ mỗi đ'
+    Spans (5):
+      [1] tokens[5:10] chars[21,50] 'tốn mấy trăm mình dung lượng.'
+      [2] tokens[36:42] chars[158,190] 'giảm bớt dung lượng game lại đi,'
+      [3] tokens[47:55] chars[208,248] 'iG sẽ giảm bớt nhiều người chơi đấy nhé!'
+      [4] tokens[56:69] chars[249,312] 'mỗi lần cập nhật đa phần không có tính năng nào hay ho ngoại'
+      [5] tokens[15:29] chars[68,135] 'chả lẻ mỗi điện thoại chỉ tải  được  một game như thế này th'
+
+[5] ID: viocd_train_4262  (train)
+    Review (6 tokens): 'không  quay ngang duoc dien thoai.'
+    Spans (1):
+      [1] tokens[0:2] chars[0,17] 'không  quay ngang'
+
+[6] ID: viocd_train_248  (train)
+    Review (73 tokens): 'facebOk làm ăn kiểu gì vậy, tài khoản cá nhân của tôi không vi phạm tiêu chuẩn c'
+    Spans (4):
+      [1] tokens[36:40] chars[160,184] 'facebOk làm ăn quá tệ!!,'
+      [2] tokens[0:5] chars[0,27] 'facebOk làm ăn kiểu gì vậy,'
+      [3] tokens[27:33] chars[119,150] 'vô hiệu hoá tài khoảng của tôi,'
+      [4] tokens[54:62] chars[239,280] 'facebOk lại vô hiệu hoá tài khoản của tôi'
+
+[7] ID: viocd_train_220  (train)
+    Review (27 tokens): 'thấy trả lời bình luận 1m5x 55 60 không vẫn vừa  cỡ  l, mình có 51 không mặc  cỡ'
+    Spans (1):
+      [1] tokens[10:21] chars[44,95] 'vừa  cỡ  l, mình có 51 không mặc  cỡ  lồn vẫn chật!'
+
+[8] ID: viocd_train_685  (train)
+    Review (50 tokens): 'son muùi cực kì kinh khủng. mình xem mfg ngày apr2019. mình không biết dòng son '
+    Spans (3):
+      [1] tokens[31:32] chars[144,153] 'hôi rình.'
+      [2] tokens[45:49] chars[203,226] 'nghe xong là ngất luôn.'
+      [3] tokens[0:5] chars[0,27] 'son muùi cực kì kinh khủng.'
+
+[9] ID: viocd_train_1726  (train)
+    Review (72 tokens): 'anh chị xem khắc phục lại lỗi hộ em với ạ, em tải xong vào thì bảo tải dữ liệu, '
+    Spans (5):
+      [1] tokens[3:6] chars[12,29] 'khắc phục lại lỗi'
+      [2] tokens[16:20] chars[63,83] 'bảo tải dữ liệu, vừa'
+      [3] tokens[21:25] chars[84,106] 'hiện tải xong lỗi, thử'
+      [4] tokens[28:34] chars[115,148] 'lại hiện tải xong lại lỗi tiếp,cứ'
+      [5] tokens[37:47] chars[157,193] 'dù em đã xoá đi tải lại 3 lần rồi ạ,'
+
+[10] ID: viocd_train_1835  (train)
+    Review (7 tokens): 'vải không đẹp nút gài quá lỏng'
+    Spans (2):
+      [1] tokens[0:2] chars[0,13] 'vải không đẹp'
+      [2] tokens[3:6] chars[14,30] 'nút gài quá lỏng'
+
+Total shown: 10

@@ -1,0 +1,100 @@
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_827\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 10}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_192\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 12}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2143\",\n  \"complaint_token_spans\": [\n    [0, 4],\n    [12, 20],\n    [22, 26],\n    [31, 43],\n    [45, 51],\n    [53, 61],\n    [63, 65]\n  ]\n}\n```", "error": null, "n_tokens": 66}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1925\",\n  \"complaint_token_spans\": [\n    [4, 15],\n    [19, 34],\n    [38, 64]\n  ]\n}\n```", "error": null, "n_tokens": 73}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1757\",\n  \"complaint_token_spans\": [\n    [6, 9],\n    [26, 27]\n  ]\n}\n```", "error": null, "n_tokens": 32}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1058\",\n  \"complaint_token_spans\": [\n    [5, 10],\n    [15, 29],\n    [36, 42],\n    [47, 55],\n    [56, 69]\n  ]\n}\n```", "error": null, "n_tokens": 75}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_747\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 32}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_4262\",\n  \"complaint_token_spans\": [\n    {\n      \"start_token\": 0,\n      \"end_token\": 2\n    }\n  ]\n}\n```", "error": null, "n_tokens": 6}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_644\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 71}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_3284\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 18}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_248\",\n  \"complaint_token_spans\": [\n    [0, 5],\n    [27, 33],\n    [36, 40],\n    [54, 62]\n  ]\n}\n```", "error": null, "n_tokens": 73}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_220\",\n  \"complaint_token_spans\": [\n    [10, 21]\n  ]\n}\n```", "error": null, "n_tokens": 27}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_685\",\n  \"complaint_token_spans\": [\n    [0, 5],\n    [31, 32],\n    [45, 49]\n  ]\n}\n```", "error": null, "n_tokens": 50}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1726\",\n  \"complaint_token_spans\": [\n    [3, 6],\n    [16, 20],\n    [21, 25],\n    [28, 34],\n    [37, 47]\n  ]\n}\n```", "error": null, "n_tokens": 72}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1835\",\n  \"complaint_token_spans\": [\n    {\n      \"start_token\": 0,\n      \"end_token\": 2\n    },\n    {\n      \"start_token\": 3,\n      \"end_token\": 6\n    }\n  ]\n}\n```", "error": null, "n_tokens": 7}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_3929\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 66}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_202\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 32}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1546\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 16}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_4259\",\n  \"complaint_token_spans\": [\n    [4, 5],\n    [7, 22]\n  ]\n}\n```", "error": null, "n_tokens": 23}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_3262\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 4}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1734\",\n  \"complaint_token_spans\": [\n    {\n      \"start_token\": 2,\n      \"end_token\": 3\n    }\n  ]\n}\n```", "error": null, "n_tokens": 4}
+{"raw_response": "{\"id\": \"viocd_train_3496\", \"complaint_token_spans\": []}", "error": null, "n_tokens": 22}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2170\",\n  \"complaint_token_spans\": [\n    {\n      \"start_token\": 0,\n      \"end_token\": 2\n    }\n  ]\n}\n```", "error": null, "n_tokens": 10}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_53\",\n  \"complaint_token_spans\": [\n    [5, 17],\n    [18, 47],\n    [55, 60]\n  ]\n}\n```", "error": null, "n_tokens": 73}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1215\",\n  \"complaint_token_spans\": [\n    [0, 2],\n    [22, 43],\n    [45, 47]\n  ]\n}\n```", "error": null, "n_tokens": 47}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_3289\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 42}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2655\",\n  \"complaint_token_spans\": [\n    [4, 5],\n    [60, 61],\n    [63, 64],\n    [66, 67]\n  ]\n}\n```", "error": null, "n_tokens": 93}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2165\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 15}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1183\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 7}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1697\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 8}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2627\",\n  \"complaint_token_spans\": [\n    [1, 7]\n  ]\n}\n```", "error": null, "n_tokens": 11}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_746\",\n  \"complaint_token_spans\": [\n    [11, 22],\n    [28, 40]\n  ]\n}\n```", "error": null, "n_tokens": 41}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_678\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 13}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2950\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 29}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_708\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 74}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2797\",\n  \"complaint_token_spans\": [\n    {\n      \"start_token\": 0,\n      \"end_token\": 2\n    },\n    {\n      \"start_token\": 6,\n      \"end_token\": 11\n    }\n  ]\n}\n```", "error": null, "n_tokens": 13}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2677\",\n  \"complaint_token_spans\": [\n    [5, 12],\n    [15, 18]\n  ]\n}\n```", "error": null, "n_tokens": 19}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2068\",\n  \"complaint_token_spans\": [\n    [5, 9],\n    [10, 23],\n    [24, 27],\n    [28, 40],\n    [41, 46],\n    [47, 53],\n    [54, 62]\n  ]\n}\n```", "error": null, "n_tokens": 76}
+{"raw_response": "{\"id\": \"viocd_train_328\", \"complaint_token_spans\": [{\"start_token\": 7, \"end_token\": 25}, {\"start_token\": 26, \"end_token\": 44}, {\"start_token\": 45, \"end_token\": 53}]}", "error": null, "n_tokens": 67}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_3565\",\n  \"complaint_token_spans\": [\n    [0, 2],\n    [5, 8]\n  ]\n}\n```", "error": null, "n_tokens": 10}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_4183\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 5}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_952\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 10}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2939\",\n  \"complaint_token_spans\": [\n    [0, 5]\n  ]\n}\n```", "error": null, "n_tokens": 17}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_588\",\n  \"complaint_token_spans\": [\n    {\n      \"start_token\": 0,\n      \"end_token\": 2\n    }\n  ]\n}\n```", "error": null, "n_tokens": 4}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_4318\",\n  \"complaint_token_spans\": [\n    [0, 7],\n    [43, 44],\n    [48, 65]\n  ]\n}\n```", "error": null, "n_tokens": 78}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2290\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 28}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2813\",\n  \"complaint_token_spans\": [\n    { \"start_token\": 0, \"end_token\": 2 },\n    { \"start_token\": 4, \"end_token\": 7 }\n  ]\n}\n```", "error": null, "n_tokens": 8}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1477\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 38}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_515\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 5}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_345\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 39}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1796\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 19}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2258\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 34}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_594\",\n  \"complaint_token_spans\": [\n    [7, 11],\n    [22, 27],\n    [29, 53],\n    [63, 67]\n  ]\n}\n```", "error": null, "n_tokens": 76}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1838\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 30}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_739\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 64}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_3520\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 19}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2843\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 6}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1235\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 9}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2870\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 41}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2773\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 17}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1647\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 30}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2090\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 39}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_531\",\n  \"complaint_token_spans\": [\n    {\n      \"start_token\": 0,\n      \"end_token\": 3\n    },\n    {\n      \"start_token\": 4,\n      \"end_token\": 15\n    }\n  ]\n}\n```", "error": null, "n_tokens": 16}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1294\",\n  \"complaint_token_spans\": [\n    [7, 11],\n    [17, 20],\n    [27, 31],\n    [33, 47]\n  ]\n}\n```", "error": null, "n_tokens": 53}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_4165\",\n  \"complaint_token_spans\": [\n    [0, 4]\n  ]\n}\n```", "error": null, "n_tokens": 19}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1924\",\n  \"complaint_token_spans\": [\n    [0, 2],\n    [18, 22],\n    [28, 32],\n    [49, 51]\n  ]\n}\n```", "error": null, "n_tokens": 57}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1240\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 35}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_3588\",\n  \"complaint_token_spans\": [\n    [6, 7],\n    [15, 29],\n    [30, 41]\n  ]\n}\n```", "error": null, "n_tokens": 50}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2948\",\n  \"complaint_token_spans\": [\n    [5, 9]\n  ]\n}\n```", "error": null, "n_tokens": 24}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2106\",\n  \"complaint_token_spans\": [\n    {\n      \"start_token\": 0,\n      \"end_token\": 1\n    }\n  ]\n}\n```", "error": null, "n_tokens": 4}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_4362\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 7}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1731\",\n  \"complaint_token_spans\": [\n    [0, 2]\n  ]\n}\n```", "error": null, "n_tokens": 10}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2526\",\n  \"complaint_token_spans\": [\n    {\n      \"start_token\": 0,\n      \"end_token\": 2\n    }\n  ]\n}\n```", "error": null, "n_tokens": 7}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_416\",\n  \"complaint_token_spans\": [\n    [0, 2],\n    [2, 5],\n    [7, 11],\n    [11, 29],\n    [29, 43],\n    [43, 50]\n  ]\n}\n```", "error": null, "n_tokens": 56}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_1805\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 33}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_251\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 40}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2462\",\n  \"complaint_token_spans\": [\n    [9, 14],\n    [31, 46],\n    [50, 74]\n  ]\n}\n```", "error": null, "n_tokens": 85}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_3127\",\n  \"complaint_token_spans\": [\n    [4, 10],\n    [12, 14],\n    [20, 22]\n  ]\n}\n```", "error": null, "n_tokens": 28}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_2094\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 9}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_train_496\",\n  \"complaint_token_spans\": [\n    [11, 15],\n    [18, 32],\n    [34, 47],\n    [52, 64]\n  ]\n}\n```", "error": null, "n_tokens": 65}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_205\",\n  \"complaint_token_spans\": [\n    {\n      \"start_token\": 3,\n      \"end_token\": 10\n    }\n  ]\n}\n```", "error": null, "n_tokens": 22}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_311\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 6}
+{"raw_response": "{\"id\": \"viocd_validation_495\", \"complaint_token_spans\": [{\"start_token\": 3, \"end_token\": 5}, {\"start_token\": 6, \"end_token\": 9}, {\"start_token\": 32, \"end_token\": 38}]}", "error": null, "n_tokens": 47}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_390\",\n  \"complaint_token_spans\": [\n    [0, 10],\n    [11, 27]\n  ]\n}\n```", "error": null, "n_tokens": 29}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_459\",\n  \"complaint_token_spans\": [\n    [10, 31]\n  ]\n}\n```", "error": null, "n_tokens": 75}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_145\",\n  \"complaint_token_spans\": [\n    [0, 4],\n    [10, 12],\n    [44, 50]\n  ]\n}\n```", "error": null, "n_tokens": 74}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_262\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 23}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_139\",\n  \"complaint_token_spans\": [\n    [24, 30],\n    [38, 58],\n    [60, 67]\n  ]\n}\n```", "error": null, "n_tokens": 73}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_241\",\n  \"complaint_token_spans\": [\n    [1, 5],\n    [16, 19]\n  ]\n}\n```", "error": null, "n_tokens": 70}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_529\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 22}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_261\",\n  \"complaint_token_spans\": [\n    [0, 2],\n    [3, 5],\n    [15, 16],\n    [47, 54]\n  ]\n}\n```", "error": null, "n_tokens": 55}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_424\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 56}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_394\",\n  \"complaint_token_spans\": [\n    [11, 16],\n    [20, 38],\n    [48, 62]\n  ]\n}\n```", "error": null, "n_tokens": 69}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_364\",\n  \"complaint_token_spans\": [\n    [10, 21],\n    [34, 42]\n  ]\n}\n```", "error": null, "n_tokens": 43}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_213\",\n  \"complaint_token_spans\": [\n    [0, 2],\n    [14, 21],\n    [48, 62]\n  ]\n}\n```", "error": null, "n_tokens": 74}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_138\",\n  \"complaint_token_spans\": [\n    [0, 3],\n    [15, 21],\n    [33, 39]\n  ]\n}\n```", "error": null, "n_tokens": 40}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_506\",\n  \"complaint_token_spans\": [\n    [0, 4],\n    [10, 16]\n  ]\n}\n```", "error": null, "n_tokens": 35}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_490\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 9}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_86\",\n  \"complaint_token_spans\": [\n    [0, 2],\n    [6, 13]\n  ]\n}\n```", "error": null, "n_tokens": 14}
+{"raw_response": "```json\n{\n  \"id\": \"viocd_validation_46\",\n  \"complaint_token_spans\": []\n}\n```", "error": null, "n_tokens": 9}

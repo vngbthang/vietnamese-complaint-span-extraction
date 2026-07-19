@@ -1,0 +1,51 @@
+record_id,split,reason,span_index,text
+viocd_train_1058,train,text_not_in_review,1,lần này cũng vậy chả lẻ mỗi điện thoại chỉ tải được một game như thế này thôi sao?
+viocd_train_4262,train,text_not_in_review,0,không quay ngang duoc dien thoai.
+viocd_train_1726,train,span_not_dict,0,"em tải xong vào thì bảo tải dữ liệu, vừa hiện tải xong lỗi"
+viocd_train_1726,train,span_not_dict,1,thử lại thì lại hiện tải xong lại lỗi tiếp
+viocd_train_1726,train,span_not_dict,2,cứ như vậy dù em đã xoá đi tải lại 3 lần rồi ạ
+viocd_train_4259,train,text_not_in_review,1,mà cửa hàng có mỗi chuyện gửi địa chỉ để khách đổi hàng cũng không làm được.
+viocd_train_2655,train,text_not_in_review,0,cửa hàng giao đồ không đúng như mẫu mình đã đặt nha..... hơi thất vọng síu
+viocd_train_2655,train,text_not_in_review,1,đồ hơi nhân đồ củng được nói chung củng chấp nhận được
+viocd_train_2655,train,text_not_in_review,2,đề ngị lần sau cửa hàng nên cho khách hàng kiểm tra hàng trước thì hay hơn gì
+viocd_train_2655,train,text_not_in_review,3,nếu hàng lỗi còn đổi liền được chứ không cho kiểm hàng thì hàng lỗi thì lổ cho khách hàng rồi
+viocd_train_746,train,text_not_in_review,3,hơn gì thì không học cứ bấm vào phần chọn sticker nghịch hoài
+viocd_train_2797,train,text_not_in_review,0,em không vào aP được ạ. bấm vào cứ out ra thôi ạ
+viocd_train_2677,train,text_not_in_review,0,mua cỡ 39 cửa hàng gửi 38 chẳng nhẽ lại không nhận hàng.
+viocd_train_2677,train,text_not_in_review,1,cửa hàng chốt đơn chán ghê
+viocd_train_328,train,text_not_in_review,3,mong admin xem xét lại chứ cư như này thì không được đâu
+viocd_train_4318,train,span_not_dict,0,khuyên anh em đùng nên chơi trò này
+viocd_train_4318,train,span_not_dict,1,vì tôi tải về xong thì nó hướng dẫn tôi xây các công trình
+viocd_train_4318,train,span_not_dict,2,nó hướng dẫn tôi xây trạm liên lạc
+viocd_train_4318,train,span_not_dict,3,xây xong nó bảo tôi nhấn vào một cái nút
+viocd_train_4318,train,span_not_dict,4,nhấn xong nó đơ luôn
+viocd_train_4318,train,span_not_dict,5,hỏi nó nói mình bị khoá tài khoản
+viocd_train_4318,train,span_not_dict,6,nó đưa ra một cái lí do không thể nào chấp nhận được
+viocd_train_4318,train,span_not_dict,7,nó nói do mình bấm không the
+viocd_train_2813,train,text_not_in_review,0,vải quá xấu . giao không đúng màu
+viocd_train_345,train,text_not_in_review,2,chẳng bù với vsmart live sạc trong vòng một tiếng bảo đảm 100% pin
+viocd_train_2258,train,text_not_in_review,0,hơi buồn chút xíu vì đăt gì cỡ 37 rồi màDi vẫn bé
+viocd_train_739,train,span_not_dict,0,tại sao khi bị mất số điện thoại mà người khác vào được zalo của mình?
+viocd_train_739,train,span_not_dict,1,mong zalo chỉnh sửa bảo mật giúp mọi người được yên tâm khi bị mất số điện thoại nhưng zalo vẫn được
+viocd_train_3520,train,text_not_in_review,0,nhưng sao tôi không hoàn tiền được ạ
+viocd_train_1235,train,text_not_in_review,0,cửa hàng giao cỡ lồn nho hon m... buon
+viocd_train_2090,train,text_not_in_review,0,sao cái game nó còn lag hơn cái quả người cáo vậy. lag đơ máy ấy.
+viocd_train_531,train,text_not_in_review,0,chất vải quá tệ
+viocd_train_531,train,text_not_in_review,1,day lưng quần thì không phải nói nó nhỏ tí mỏng te
+viocd_train_4165,train,text_not_in_review,0,giao hàng không đúng cỡ
+viocd_train_4362,train,text_not_in_review,0,cỡ lồn hơi ngắn
+viocd_train_1731,train,text_not_in_review,0,đặt cỡ 36.37 mà giao cỡ 39 . khỏi mang
+viocd_train_416,train,text_not_in_review,4,phí giao hàng đã cao rồi mà còn tính thêm cả phí dịch vụ positive toàn kiếm cách moi móc tiền
+viocd_train_251,train,text_not_in_review,0,nhung ma tôi thich parkout . nhung tôi tai map parkout sao no không được .
+viocd_train_251,train,text_not_in_review,2,admin xem rồi sua lai loi game gì đăng @@
+viocd_train_2462,train,span_not_dict,0,tôi đã mất 6 tài khoản facebook rồi
+viocd_train_2462,train,span_not_dict,1,"một phần là nhờ hacker , một phần là nhờ xác nhận tài khoản"
+viocd_train_2462,train,span_not_dict,2,tôi có đăng nhập hay làm gì sai đâu mà cứ mất tài khoản hoài
+viocd_train_2462,train,span_not_dict,3,cứ mỗi lần tôi bị vậy là phải tạo tài khoản lại
+viocd_train_2462,train,span_not_dict,4,đã thế còn mất công đi tìm lại bạn mình để kết bạn lại
+viocd_train_2462,train,span_not_dict,5,ai ai cũng than phiền
+viocd_validation_145,valid,span_not_dict,0,không được đồng kiểm hàng nên dễ mua phải hàng không đúng quả người cáo
+viocd_validation_394,valid,span_not_dict,0,"ngồi một chỗ mà cũng bắt quá trời pokemon positive ) mà lên level rất là chậm:(( mình nói trước nhá,"
+viocd_validation_394,valid,span_not_dict,1,game này chỉ dành cho những bạn biết kiêng nhẫn chứ không dành cho thằng nào không biết chơi mà cứ c
+viocd_validation_394,valid,span_not_dict,2,chửi... game nó tội
+viocd_validation_46,valid,text_not_in_review,0,cửa hàng giao em sai mẫ

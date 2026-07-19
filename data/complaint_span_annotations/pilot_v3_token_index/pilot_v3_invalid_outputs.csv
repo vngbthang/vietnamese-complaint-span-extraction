@@ -1,0 +1,2 @@
+id,reason,predicted_value,review_text
+viocd_train_1215,token_out_of_range,"start=45, end=47, n=47","không hiểu ứng dụng hoạt động kiểu gì. tại sao lúc trưa tôi vẫn còn vào được, nhưng chiều thì twiTer bảo nhập mật khẩu, số điên thoại, và tên, tôi đều làm đúng hết nhưng cuối cùng tôi vẫn không thể đăng nhập. thật tồi tệ"

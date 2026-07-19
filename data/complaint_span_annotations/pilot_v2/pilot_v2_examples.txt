@@ -1,0 +1,75 @@
+======================================================================
+Step 3A.1: Pilot Annotation Examples (v2 - with whitespace repair)
+======================================================================
+
+[1] ID: viocd_train_827  (train)
+    Review: 'màu trắng không gửi gửi màu xanh quá nhỏ luôn'
+    Accepted spans (1):
+      [1] [0,45] 'màu trắng không gửi gửi màu xanh quá nhỏ luôn'
+
+[2] ID: viocd_train_2143  (train)
+    Review: 'game không hề cân bằng, nạp và không nạp quá khác biệt, hệ thống tìm trận không cân xứng lực chiến 5k gặp 10k 3 ván liền thì chơi gì? và ngoài việc nạp thẻ thì đá cường hoá lấy ở đâu ra??? hay là vng không quan tâm đến người chơi mà chỉ quan tâm đến tiền thu từ nạp thẻ? game hút máu à?'
+    Accepted spans (6):
+      [1] [271,286] 'game hút máu à?'
+      [2] [0,22] 'game không hề cân bằng'
+      [3] [24,54] 'nạp và không nạp quá khác biệt'
+      [4] [134,188] 'và ngoài việc nạp thẻ thì đá cường hoá lấy ở đâu ra???'
+      [5] [56,133] 'hệ thống tìm trận không cân xứng lực chiến 5k gặp 10k 3 ván '
+
+[3] ID: viocd_train_1925  (train)
+    Review: 'aP có một số nhược điểm: thứ một là nhiều bài hạn chế, tìm không thấy. thứ 2 là việc aP tự động đăng nhập tài khoản zalo mỗi lần truy cập là rất phiền. cuối cùng là khi tôi dùng các ứng dụng chỉnh video như kinemaster, inshot, viva video ... muốn chèn bài hát đã tải ở zing về nhưng tìm không có, chỉ có ... bài đánh giá đầy đủ'
+    Accepted spans (3):
+      [1] [36,69] 'nhiều bài hạn chế, tìm không thấy'
+      [2] [80,150] 'việc aP tự động đăng nhập tài khoản zalo mỗi lần truy cập là'
+      [3] [165,295] 'khi tôi dùng các ứng dụng chỉnh video như kinemaster, inshot'
+
+[4] ID: viocd_train_1757  (train)
+    Review: 'kem nền thì ổn rồi mà quà thì quá tệ tặng cũng có tâm chút đi để màu này tặng cây son hồng bé rồi sao xài, thiệt hết nói nỗi 😑😑😑😑'
+    Accepted spans (3):
+      [1] [22,36] 'quà thì quá tệ'
+      [2] [107,124] 'thiệt hết nói nỗi'
+      [3] [37,105] 'tặng cũng có tâm chút đi để màu này tặng cây son hồng bé rồi'
+
+[5] ID: viocd_train_1058  (train)
+    Review: 'mỗi lần cập nhật lại tốn mấy trăm mình dung lượng. lần này cũng vậy chả lẻ mỗi điện thoại chỉ tải  được  một game như thế này thôi sao? iG nên xem xét lại mà giảm bớt dung lượng game lại đi, còn không có thể iG sẽ giảm bớt nhiều người chơi đấy nhé! mỗi lần cập nhật đa phần không có tính năng nào hay ho ngoại... bài đánh giá đầy đủ'
+    Accepted spans (4):
+      [1] [0,49] 'mỗi lần cập nhật lại tốn mấy trăm mình dung lượng'
+      [2] [136,189] 'iG nên xem xét lại mà giảm bớt dung lượng game lại đi'
+      [3] [191,247] 'còn không có thể iG sẽ giảm bớt nhiều người chơi đấy nhé'
+      [4] [249,309] 'mỗi lần cập nhật đa phần không có tính năng nào hay ho ngoại'
+
+[6] ID: viocd_train_747  (train)
+    Review: 'mình mua hàng đã xem rất rõ là có tặng kèm quà hay không mà vẫn không có. mua rất nhiều lần và lần đầu tiên mình thất vọng đến vậy 😔'
+    Accepted spans (2):
+      [1] [95,130] 'lần đầu tiên mình thất vọng đến vậy'
+      [2] [31,72] 'có tặng kèm quà hay không mà vẫn không có'
+
+[7] ID: viocd_train_3284  (train)
+    Review: 'admin ơi. sao không thấy thông kê các thông số dịch bệnh liên quan đến nước anh vậy'
+    Accepted spans (1):
+      [1] [10,83] 'sao không thấy thông kê các thông số dịch bệnh liên quan đến'
+
+[8] ID: viocd_train_248  (train)
+    Review: 'facebOk làm ăn kiểu gì vậy, tài khoản cá nhân của tôi không vi phạm tiêu chuẩn cộng đồng gì cả, mà tại sao các ông lại vô hiệu hoá tài khoảng của tôi, tôi thấy facebOk làm ăn quá tệ!!, tài khoản của tôi là chính chủ tên thật có cả cmnd mà facebOk lại vô hiệu hoá tài khoản của tôi không có lý do g... bài đánh giá đầy đủ'
+    Accepted spans (5):
+      [1] [0,26] 'facebOk làm ăn kiểu gì vậy'
+      [2] [151,181] 'tôi thấy facebOk làm ăn quá tệ'
+      [3] [99,149] 'tại sao các ông lại vô hiệu hoá tài khoảng của tôi'
+      [4] [239,297] 'facebOk lại vô hiệu hoá tài khoản của tôi không có lý do g'
+      [5] [28,94] 'tài khoản cá nhân của tôi không vi phạm tiêu chuẩn cộng đồng'
+
+[9] ID: viocd_train_220  (train)
+    Review: 'thấy trả lời bình luận 1m5x 55 60 không vẫn vừa  cỡ  l, mình có 51 không mặc  cỡ  lồn vẫn chật! chán chả buồn nói 😒😒😒'
+    Accepted spans (1):
+      [1] [96,117] 'chán chả buồn nói 😒😒😒'
+
+[10] ID: viocd_train_685  (train)
+    Review: 'son muùi cực kì kinh khủng. mình xem mfg ngày apr2019. mình không biết dòng son này màu nào cũng mùi này hay chỉ có màu đỏ đất- thriLer nude là hôi rình. để xem mấy hôm nữa mùi có tản bớt không, chứ mùi nghe xong là ngất luôn.'
+    Accepted spans (5):
+      [1] [97,104] 'mùi này'
+      [2] [144,152] 'hôi rình'
+      [3] [173,193] 'mùi có tản bớt không'
+      [4] [0,26] 'son muùi cực kì kinh khủng'
+      [5] [199,225] 'mùi nghe xong là ngất luôn'
+
+Total shown: 10

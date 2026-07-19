@@ -1,0 +1,6 @@
+{
+  "task": "complaint_detection",
+  "total_records": 5484,
+  "complaint_records": 2854,
+  "non_complaint_records": 2630
+}

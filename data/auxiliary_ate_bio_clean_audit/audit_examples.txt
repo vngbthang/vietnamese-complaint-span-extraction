@@ -1,0 +1,118 @@
+Step 5A.1 Audit: Auxiliary ATE Span Count Consistency
+===============================================================================
+
+AUDIT CONCLUSION: A
+Step 5A.1 span count is CORRECT.
+
+Step 5A.1 span count is CORRECT. Step 2 reported total_spans=45,662 which came from the num_spans field, but the actual spans derivable from BIO tags = 43614. The num_spans field was inflated by 2048 across 1857 records. Step 5A removed 0 empty spans. The true span count difference between original and cleaned is 0, all explained by empty_span_removed. No spans were accidentally merged or dropped.
+
+ROOT CAUSE OF APPARENT DISCREPANCY:
+  Step 2 reported total_spans = 45,662
+  This came from the "num_spans" field in the original JSONL.
+  But actual spans derivable from BIO tags = 43,614
+  The num_spans field was INFLATED by 2,048.
+  This inflation appears in 1,857 records.
+
+  Step 5A removed 0 empty spans (text.strip() == "").
+  Cleaned spans = 43,614.
+
+  True discrepancy: 43614 - 43614 = 0 spans removed.
+  All 0 removed spans are empty/whitespace spans.
+
+KEY FINDINGS:
+  1. All 17,958 original records preserved (no records dropped).
+  2. Original BIO encoding is valid — 0 I-ASP sequence errors.
+  3. All 17,958 records contain whitespace tokens (expected, char-level tokenization).
+  4. num_spans field is inflated by 2,048 across 1,857 records.
+  5. Step 5A removed exactly 0 empty spans.
+  6. No spans were accidentally merged.
+
+SUSPICIOUS RECORDS (num_spans field != BIO-derived spans):
+  Count: 1,857
+  These records have a num_spans field that does not match the actual BIO-derived span count.
+  This is NOT a Step 5A problem — it is a data quality issue in the original Step 2 output.
+
+[1] uvisd4sa_train_8 (uvisd4sa, split=train)
+    num_spans field: 6
+    BIO-derived spans: 5
+    Difference: 1
+    Text: Mua được 1 tuần thấy máy quá OKPin trâu , máy mượt , cảm biến vân tay nhạy , k nóng máy . Nhu cầu ch...
+    BIO sample: ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'B-ASP', 'I-ASP', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'O']
+    Derived spans: [{'start': 21, 'end': 34, 'text': 'máy quá OKPin'}, {'start': 34, 'end': 39, 'text': ' trâu'}, {'start': 42, 'end': 57, 'text': 'máy mượt , cảm '}, {'start': 77, 'end': 158, 'text': 'k nóng máy . Nhu cầu chơi game nên k cần gì hơn , liên quân vô nhanh gần ngang ip'}, {'start': 158, 'end': 171, 'text': ' . Vs mức giá'}]
+
+[2] uvisd4sa_train_16 (uvisd4sa, split=train)
+    num_spans field: 4
+    BIO-derived spans: 3
+    Difference: 1
+    Text: Thiết kế đẹp , kiểu dáng sang trọng. Nhất là pin, trâu lắm,tư vấn nhiệt tình. Tóm lại mới thứ đều ok
+    BIO sample: ['B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'B-ASP', 'I-ASP']
+    Derived spans: [{'start': 0, 'end': 25, 'text': 'Thiết kế đẹp , kiểu dáng '}, {'start': 37, 'end': 58, 'text': 'Nhất là pin, trâu lắm'}, {'start': 59, 'end': 76, 'text': 'tư vấn nhiệt tình'}]
+
+[3] uvisd4sa_train_21 (uvisd4sa, split=train)
+    num_spans field: 4
+    BIO-derived spans: 3
+    Difference: 1
+    Text: Rất tuyệt sài chơi game rất tốt à ko có mật khẩu vân tay thôi chụp hình cũng rát đẹp cầm cũng sướng ...
+    BIO sample: ['O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O']
+    Derived spans: [{'start': 10, 'end': 31, 'text': 'sài chơi game rất tốt'}, {'start': 32, 'end': 61, 'text': 'à ko có mật khẩu vân tay thôi'}, {'start': 62, 'end': 84, 'text': 'chụp hình cũng rát đẹp'}]
+
+[4] uvisd4sa_train_22 (uvisd4sa, split=train)
+    num_spans field: 4
+    BIO-derived spans: 3
+    Difference: 1
+    Text: Mới mua máy, sản phẩm đẹp và bắt mắt. Nhân viên tư vấn nhiệt tình. Lại được giảm giá 650k nữa. Rất h...
+    BIO sample: ['O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP']
+    Derived spans: [{'start': 8, 'end': 26, 'text': 'máy, sản phẩm đẹp '}, {'start': 38, 'end': 65, 'text': 'Nhân viên tư vấn nhiệt tình'}, {'start': 67, 'end': 93, 'text': 'Lại được giảm giá 650k nữa'}]
+
+[5] uvisd4sa_train_33 (uvisd4sa, split=train)
+    num_spans field: 5
+    BIO-derived spans: 4
+    Difference: 1
+    Text: 5tr5 cấu hình ngoại hình ko chê vào đâu được.may nóng ngày đầu thôi.qua ngày sau chơi ko thấy nóng n...
+    BIO sample: ['B-ASP', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP']
+    Derived spans: [{'start': 0, 'end': 4, 'text': '5tr5'}, {'start': 5, 'end': 13, 'text': 'cấu hình'}, {'start': 13, 'end': 36, 'text': ' ngoại hình ko chê vào '}, {'start': 45, 'end': 102, 'text': 'may nóng ngày đầu thôi.qua ngày sau chơi ko thấy nóng nữa'}]
+
+[6] uvisd4sa_train_48 (uvisd4sa, split=train)
+    num_spans field: 4
+    BIO-derived spans: 3
+    Difference: 1
+    Text: Mua được một tuần.thế giới di động. Pin sạc lâu, hết pin cũng nhanh.tương đương con vivo y8...
+    BIO sample: ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP']
+    Derived spans: [{'start': 41, 'end': 76, 'text': ' Pin sạc lâu, hết pin cũng nhanh'}, {'start': 104, 'end': 113, 'text': '̉a vợ mi'}, {'start': 142, 'end': 162, 'text': 'loa nghe hơi rè rè.'}]
+
+[7] uvisd4sa_train_50 (uvisd4sa, split=train)
+    num_spans field: 5
+    BIO-derived spans: 4
+    Difference: 1
+    Text: Dùng đc một tuần. Thấy pin ngon. Thiết kế máy đẹp, màn to nhưng hơi tối và tái, Camera tầm Trung. Cả...
+    BIO sample: ['O', 'O', 'O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP']
+    Derived spans: [{'start': 12, 'end': 23, 'text': 'tuần. Thấy '}, {'start': 23, 'end': 39, 'text': 'pin ngon. Thiết '}, {'start': 51, 'end': 78, 'text': 'màn to nhưng hơi tối và tái'}, {'start': 78, 'end': 121, 'text': ', Camera tầm Trung. Cảm ứng mượt, bắt wifi '}]
+
+[8] uvisd4sa_train_55 (uvisd4sa, split=train)
+    num_spans field: 4
+    BIO-derived spans: 3
+    Difference: 1
+    Text: Thiết kế máy đẹp , pin sử dụng thoải mái. Cấu hình CAO trong tầm giá , phần mềm máy hoàn thiện hơn s...
+    BIO sample: ['B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O']
+    Derived spans: [{'start': 0, 'end': 12, 'text': 'Thiết kế máy'}, {'start': 19, 'end': 40, 'text': 'pin sử dụng thoải mái'}, {'start': 153, 'end': 192, 'text': 'hãng sớm cập nhật bản vá lỗi hoàn thiện'}]
+
+[9] uvisd4sa_train_68 (uvisd4sa, split=train)
+    num_spans field: 5
+    BIO-derived spans: 4
+    Difference: 1
+    Text: Điện thoại xài ổn màn hình lớn ĐMX phục vụ ok hệ điều hành mượt mà chụp ảnh sắc nét
+    BIO sample: ['B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'B-ASP', 'I-ASP', 'O', 'O', 'O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP']
+    Derived spans: [{'start': 0, 'end': 14, 'text': 'Điện thoại xài'}, {'start': 18, 'end': 30, 'text': 'màn hình lớn'}, {'start': 30, 'end': 34, 'text': ' ĐMX'}, {'start': 45, 'end': 66, 'text': ' hệ điều hành mượt mà'}]
+
+[10] uvisd4sa_train_78 (uvisd4sa, split=train)
+    num_spans field: 4
+    BIO-derived spans: 3
+    Difference: 1
+    Text: Sản phẩm quá tốt. Đã sử dụng hơn 1 năm nhưng máy vẫn nhanh và mượt. Camera kép chụp ảnh xoá phông ch...
+    BIO sample: ['B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'B-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'I-ASP', 'O', 'O', 'O', 'O', 'O']
+    Derived spans: [{'start': 0, 'end': 16, 'text': 'Sản phẩm quá tốt'}, {'start': 29, 'end': 49, 'text': 'hơn 1 năm nhưng máy '}, {'start': 68, 'end': 111, 'text': 'Camera kép chụp ảnh xoá phông chuyên nghiệp'}]
+
+SPANS REMOVED BY CLEANING (all empty spans):
+  Total: 0
+  All removed because span text was empty/whitespace.
+

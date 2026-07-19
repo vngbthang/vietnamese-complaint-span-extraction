@@ -1,0 +1,118 @@
+Manual LLM Annotation Instructions
+=================================
+Step 3A-Manual: Pilot Annotation for ViOCD Complaint Span Extraction
+
+This package automates LLM-assisted complaint span annotation for 100 positive
+Vietnamese customer reviews from ViOCD.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILES IN THIS PACKAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+prompt files:
+  batch_001_prompt.txt  — records 1-25
+  batch_002_prompt.txt  — records 26-50
+  batch_003_prompt.txt  — records 51-75
+  batch_004_prompt.txt  — records 76-100
+
+output directory:
+  batch_outputs/         — place your LLM JSON outputs here
+
+validation script:
+  validate_manual_outputs.py  — run after saving all batch outputs
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP-BY-STEP INSTRUCTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. OPEN A BATCH PROMPT FILE
+   Open batch_001_prompt.txt in a text editor or terminal.
+
+2. COPY THE ENTIRE CONTENTS
+   Select all (Ctrl+A / Cmd+A) and copy (Ctrl+C / Cmd+C).
+
+3. PASTE INTO LLM WEB UI
+   Paste into ChatGPT, Claude, or any LLM interface that supports
+   long-context input.
+
+4. WAIT FOR THE RESPONSE
+   The LLM will return a JSON array of complaint spans for each record.
+   Do NOT add any extra text, explanation, or markdown fences — just the
+   raw JSON array.
+
+5. COPY THE JSON RESPONSE
+   Select the entire JSON response from the LLM.
+
+6. SAVE AS batch_001_output.json
+   Open a new file, paste the JSON, and save as:
+     batch_outputs/batch_001_output.json
+
+7. REPEAT FOR ALL 4 BATCHES
+   - batch_002_prompt.txt  →  batch_outputs/batch_002_output.json
+   - batch_003_prompt.txt  →  batch_outputs/batch_003_output.json
+   - batch_004_prompt.txt  →  batch_outputs/batch_004_output.json
+
+8. RUN VALIDATION
+   python3 validate_manual_outputs.py
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WHAT THE VALIDATOR DOES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The validator script will:
+  ✓ Verify each batch output file is valid JSON
+  ✓ Check that every returned span text appears EXACTLY in the original review
+  ✓ Compute character offsets via exact string matching
+  ✓ Remove duplicate spans
+  ✓ Remove empty/whitespace/punctuation-only spans
+  ✓ Remove spans not found in the original review text
+  ✓ Save invalid cases to pilot_manual_invalid.csv
+  ✓ Save validated records to pilot_manual_validated.jsonl
+  ✓ Print a manifest with statistics
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EXPECTED OUTPUTS AFTER VALIDATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  pilot_manual_validated.jsonl  — 100 records with complaint spans
+  pilot_manual_invalid.csv      — any invalid/missing entries
+  pilot_manual_manifest.json    — statistics
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IMPORTANT RULES FOR THE LLM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✗ DO NOT rewrite, normalize, or paraphrase text
+  ✗ DO NOT infer hidden complaints
+  ✗ DO NOT extract aspect terms alone (e.g., "pin")
+  ✗ DO NOT return character offsets (only text strings)
+  ✗ DO NOT wrap output in markdown code fences
+
+  ✓ DO extract exact substrings from the original review
+  ✓ DO prefer minimal but complete complaint expressions
+  ✓ DO allow multiple spans per review
+  ✓ DO return empty list if no complaint exists
+  ✓ DO ensure every span text matches the original exactly
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problem: LLM returns markdown code fences around JSON
+Fix: Manually remove ```json and ``` from the response before saving
+
+Problem: LLM skips some records or returns fewer items
+Fix: The validator will flag missing records. Re-prompt with all records.
+
+Problem: LLM reformulates the text (e.g., corrects spelling)
+Fix: The validator will reject non-matching spans. Re-annotate those records.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NEXT STEPS AFTER VALIDATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Once validated:
+  1. Review pilot_manual_invalid.csv for any patterns
+  2. Manually fix disputed spans if needed
+  3. Proceed to Step 3B: Convert validated spans to BIO format
+  4. If pilot quality is good, scale annotation to full ViOCD dataset

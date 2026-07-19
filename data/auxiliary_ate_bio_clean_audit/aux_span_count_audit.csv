@@ -1,0 +1,12 @@
+metric,original,cleaned,difference
+total_records,17958,17958,0
+total_tokens,1349490,1349490,0
+total_spans,43614,43614,0
+num_spans_field,45662,N/A,2048
+O,896873,896932,59
+B-ASP,43673,43614,-59
+I-ASP,408944,408944,0
+records_with_whitespace_tokens,17958,17958,0
+total_whitespace_tokens,626392,626392,0
+records_dropped,0,0,0
+records_with_span_diff,0,0,0

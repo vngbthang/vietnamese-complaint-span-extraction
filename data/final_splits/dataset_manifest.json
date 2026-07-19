@@ -1,0 +1,74 @@
+{
+  "total_records": 23672,
+  "total_spans": 45662,
+  "invalid_spans_removed": 41,
+  "duplicate_id_count": 0,
+  "splits": {
+    "train": {
+      "records": 17819,
+      "spans": 32997,
+      "records_with_spans": 13270,
+      "records_without_spans": 4549,
+      "complaint_records": 10601,
+      "non_complaint_records": 7218
+    },
+    "valid": {
+      "records": 2360,
+      "spans": 4608,
+      "records_with_spans": 1785,
+      "records_without_spans": 575,
+      "complaint_records": 1361,
+      "non_complaint_records": 999
+    },
+    "test": {
+      "records": 3493,
+      "spans": 8057,
+      "records_with_spans": 2903,
+      "records_without_spans": 590,
+      "complaint_records": 2056,
+      "non_complaint_records": 1437
+    }
+  },
+  "by_source": {
+    "viocd": {
+      "records": 5484,
+      "spans": 0,
+      "records_with_spans": 0,
+      "records_without_spans": 5484,
+      "complaint_records": 2854,
+      "non_complaint_records": 2630,
+      "task": "complaint_detection"
+    },
+    "uvisd4sa": {
+      "records": 11122,
+      "spans": 35355,
+      "records_with_spans": 10892,
+      "records_without_spans": 230,
+      "complaint_records": 6329,
+      "non_complaint_records": 4793,
+      "task": "aspect_term_extraction"
+    },
+    "causasent": {
+      "records": 7066,
+      "spans": 10307,
+      "records_with_spans": 7066,
+      "records_without_spans": 0,
+      "complaint_records": 4835,
+      "non_complaint_records": 2231,
+      "task": "aspect_term_extraction"
+    }
+  },
+  "by_span_type": {
+    "all": 45662,
+    "aspect": 45662
+  },
+  "decisions": {
+    "invalid_spans": "keep_parent_remove_spans",
+    "invalid_spans_removed": 41,
+    "merge_all_datasets": false,
+    "bio_scheme": {
+      "complaint_spans": "O, B-COMP, I-COMP",
+      "aspect_spans": "O, B-ASP, I-ASP"
+    }
+  }
+}

@@ -1,0 +1,140 @@
+You are annotating Vietnamese customer reviews for complaint span extraction.
+
+Task:
+Extract all complaint spans from each given review.
+
+Definition:
+A complaint span is a contiguous text segment that directly expresses dissatisfaction, product/service failure, inconvenience, unmet expectation, or negative customer experience.
+
+Rules:
+1. Extract only exact substrings from the original review.
+2. Do not rewrite, normalize, translate, or paraphrase.
+3. Do not infer implicit complaints.
+4. Do not extract aspect terms alone unless the phrase itself expresses a complaint.
+   Bad: "pin" (just an aspect term)
+   Good: "pin tụt quá nhanh" (aspect + complaint)
+5. Prefer minimal but complete complaint expressions.
+6. Multiple complaint spans are allowed.
+7. Return an empty list if there is no explicit complaint expression.
+8. Every returned span text must appear exactly in the original review.
+9. Return text only — NO character offsets.
+
+Required output format — return a JSON array:
+[
+  {
+    "id": "record_id",
+    "complaint_spans": [
+      {"text": "complaint expression 1"},
+      {"text": "complaint expression 2"}
+    ]
+  },
+  ...
+]
+
+IMPORTANT:
+- Your response must contain ONLY the JSON array. No explanation, no markdown, no code fences.
+- Each record's id and text are provided below.
+
+BATCH 002 — 25 records
+============================================================
+
+[1] ID: viocd_train_3289
+    Split: train
+    Text: xin nhà phát hành game cho thêm stop ở bà rịa - vũng tàu, thành phố bà rịa, đương số 43, ấp đông, xã hoà long nha. nhiều khi muốn chơi nhưng cứ vô là không có gym với stop nên buồn
+
+[2] ID: viocd_train_2655
+    Split: train
+    Text: cửa hàng  giao đồ  không  đúng như mẫu mình đã đặt nha..... hơi thất vọng síu với lại đồ hơi nhân đồ củng được nói chung củng chấp nhận  được  mà đề ngị lần sau  cửa hàng  nên cho khách hàng kiểm tra hàng trước thì hay hơn  gì i nếu hàng lỗi còn đổi liền  được  chứ  không  cho kiểm hàng thì hàng lỗi thì lổ cho khách hàng rồi..... đây là ý kiến riêng của mình nếu  cửa hàng  cho kiểm hàng trước thì lần sau mình ủng hộ tiếp nha
+
+[3] ID: viocd_train_2165
+    Split: train
+    Text: mẹ mình thích lắm mặc dù đế nhựa vậy không đẹp lắm nhưng hợp giá
+
+[4] ID: viocd_train_1183
+    Split: train
+    Text: lưng rộng mà ống lại hơi ngắn
+
+[5] ID: viocd_train_1697
+    Split: train
+    Text: nên bổ xung thêm tiếng việt nam vào.
+
+[6] ID: viocd_train_2627
+    Split: train
+    Text: hay bị kẹt chất lượng trung quốc bình, không nên mua
+
+[7] ID: viocd_train_746
+    Split: train
+    Text: không có khống chế phần tải về nội dung khoá học. bé cứ bấm vào tải về quá trời làm máy đơ luôn. cả phần chơi sticker nữa. hov gì  thì không học cứ bấm vào phần chọn sticker nghịch hoài.
+
+[8] ID: viocd_train_678
+    Split: train
+    Text: du đep nhung rat tiec la nho qua.chi mot nguoi đi la vua
+
+[9] ID: viocd_train_2950
+    Split: train
+    Text: mới vô thật sự nản game luôn . đã thế nạp xong vô không biết kc nó đi đâu.. mong nhà điều hành xem lại kc nó đi đâu...
+
+[10] ID: viocd_train_708
+    Split: train
+    Text: game rất hay và vui. có thể kết bạn được. có thể chơi trò chuyện và nhắn tin với nhau. nhưng tôi muốn có nhiều skin mua bằng đậu mini hoặc từ các mảnh họp lại được bộ bộ để cho hững người không nạp được tiền vẫn có skin đẹp để mặc cho nhìn nó phong cách một xíu. chứ tôi thấy lâu lâu tự nhiên có ngườ... bài đánh giá đầy đủ
+
+[11] ID: viocd_train_2797
+    Split: train
+    Text: em không vào aP  được  ạ. bấm vào cứ out ra thôi ạ
+
+[12] ID: viocd_train_2677
+    Split: train
+    Text: mua  cỡ  39  cửa hàng  gửi 38 chẳng nhẽ lại không nhận hàng. cửa hàng  chốt đơn chán ghê
+
+[13] ID: viocd_train_2068
+    Split: train
+    Text: công tình yêu lớn mà làm ăn như lừa đảo. làm chương trình km làm gì để khách dô đặt xong rồi không giao, còn kêu giao lộn. số điện thoại địa chỉ tên rõ ràng vậy mà lộn cái gì. làm mất thời gian chờ đợi. còn không có chính sách đền bù. chăm sóc khách hàng có tốt cũng vô dụng. từ nay xoá aP, không bao giờ ... bài đánh giá đầy đủ
+
+[14] ID: viocd_train_328
+    Split: train
+    Text: tôi không biết tại vì sao . tự nhiên tài khoản của tôi mất hết biệt hiệu và màu sắc cũng như mất cả cảm xúc. tôi cài đặt lại thì không có phần biệu tượng cảm xúc màu và biệt hiệu để thay đổi. tôi xoá mes đi tải lại cũng không được. mong admin xem xét lại chứ cư như này thì không  được  đâu.
+
+[15] ID: viocd_train_3565
+    Split: train
+    Text: giao không đúng mẫu,lần này mua quá thất vọng .
+
+[16] ID: viocd_train_4183
+    Split: train
+    Text: giao hàng hơi lâu á
+
+[17] ID: viocd_train_952
+    Split: train
+    Text: rất đẹp nhưng vải hơi mỏng vậy cũng được rồi
+
+[18] ID: viocd_train_2939
+    Split: train
+    Text: cửa hàng  làm ăn kỳ vậy? lúc mua là có tặng son giờ lại nói không có.
+
+[19] ID: viocd_train_588
+    Split: train
+    Text: hàng không đúng mẫu
+
+[20] ID: viocd_train_4318
+    Split: train
+    Text: khuyên anh em đùng nên chơi trò này. vì tôi tải về xong thì nó hướng dẫn tôi xây các công trình. nó hướng dẫn tôi xây trạm liên lạc. xây xong nó bảo tôi nhấn vào một cái nút. nhấn xong nó đơ luôn. hỏi nó nói mình bị khoá tài khoản. nó đưa ra một cái lí do không thể nào chấp nhận được. nó nói do mình bấm không the... bài đánh giá đầy đủ
+
+[21] ID: viocd_train_2290
+    Split: train
+    Text: sao không đánh giá  1star    được  nhỉ!? tiếc cái công 2 tháng chơi game, anh em nào tưởng hay thì chớ có dại nhé, sau hối không kịp
+
+[22] ID: viocd_train_2813
+    Split: train
+    Text: vải quá xấu . giao  không đúng màu
+
+[23] ID: viocd_train_1477
+    Split: train
+    Text: đồ rất đẹp nha mọi người giống hình lắm luôn giá rẻ nhưng giặc ra màu mặc một lần đổ lông rồi  nagative  giao hàng lâu nói chung giá vậy là rất được sẽ ủng hộ lần sao
+
+[24] ID: viocd_train_515
+    Split: train
+    Text: đàm đẹp vãi hơi mõng
+
+[25] ID: viocd_train_345
+    Split: train
+    Text: điện thoại đẹp nhưng sạc nhanh 15w kiểu gì mà mắc ghét, chậm như rùa. có 13% pin mà báo sạc 39 phút nữa mới đầy. chẳng bù với vsmart live sạc trong vòng một tiếng bảo đảm100% pin.
+

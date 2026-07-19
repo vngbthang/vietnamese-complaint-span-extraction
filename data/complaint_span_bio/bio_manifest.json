@@ -1,0 +1,71 @@
+{
+  "label_set": [
+    "O",
+    "B-COMP",
+    "I-COMP"
+  ],
+  "tokenization": "regex_non_whitespace",
+  "step3b_audit": {
+    "positive_review_records": 2854,
+    "unique_raw_output_ids": 2854,
+    "missing_output_records_recomputed": 0,
+    "annotation_model_detected": "mistralai/mistral-small-4-119b-2603"
+  },
+  "total_records": 5484,
+  "positive_records": 2854,
+  "negative_records": 2630,
+  "records_with_spans": 1842,
+  "records_without_spans": 3642,
+  "total_complaint_spans": 5272,
+  "total_tokens": 158364,
+  "bio_label_distribution": {
+    "O": 274281,
+    "B-COMP": 5261,
+    "I-COMP": 37186
+  },
+  "roundtrip_error_count": 26,
+  "splits": {
+    "train": {
+      "records": 4387,
+      "positive_records": 2292,
+      "negative_records": 2095,
+      "records_with_spans": 1458,
+      "records_without_spans": 2929,
+      "spans": 4169,
+      "tokens": 126227,
+      "bio_label_distribution": {
+        "O": 92894,
+        "B-COMP": 4161,
+        "I-COMP": 29172
+      }
+    },
+    "valid": {
+      "records": 548,
+      "positive_records": 283,
+      "negative_records": 265,
+      "records_with_spans": 204,
+      "records_without_spans": 344,
+      "spans": 586,
+      "tokens": 16122,
+      "bio_label_distribution": {
+        "O": 11384,
+        "B-COMP": 585,
+        "I-COMP": 4153
+      }
+    },
+    "test": {
+      "records": 549,
+      "positive_records": 279,
+      "negative_records": 270,
+      "records_with_spans": 180,
+      "records_without_spans": 369,
+      "spans": 517,
+      "tokens": 16015,
+      "bio_label_distribution": {
+        "O": 11639,
+        "B-COMP": 515,
+        "I-COMP": 3861
+      }
+    }
+  }
+}

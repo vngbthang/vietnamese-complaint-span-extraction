@@ -1,0 +1,36 @@
+{
+  "total_records": 5484,
+  "positive_review_records": 2854,
+  "negative_all_o_records": 2630,
+  "total_complaint_spans": 0,
+  "records_with_spans": 0,
+  "records_without_spans": 2854,
+  "offset_repaired_spans": 0,
+  "invalid_removed_spans": 0,
+  "splits": {
+    "train": {
+      "records": 2292,
+      "positive": 2292,
+      "negative": 0,
+      "spans": 0,
+      "records_with_spans": 0,
+      "records_without_spans": 2292
+    },
+    "valid": {
+      "records": 283,
+      "positive": 283,
+      "negative": 0,
+      "spans": 0,
+      "records_with_spans": 0,
+      "records_without_spans": 283
+    },
+    "test": {
+      "records": 279,
+      "positive": 279,
+      "negative": 0,
+      "spans": 0,
+      "records_with_spans": 0,
+      "records_without_spans": 279
+    }
+  }
+}

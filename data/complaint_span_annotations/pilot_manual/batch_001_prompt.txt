@@ -1,0 +1,140 @@
+You are annotating Vietnamese customer reviews for complaint span extraction.
+
+Task:
+Extract all complaint spans from each given review.
+
+Definition:
+A complaint span is a contiguous text segment that directly expresses dissatisfaction, product/service failure, inconvenience, unmet expectation, or negative customer experience.
+
+Rules:
+1. Extract only exact substrings from the original review.
+2. Do not rewrite, normalize, translate, or paraphrase.
+3. Do not infer implicit complaints.
+4. Do not extract aspect terms alone unless the phrase itself expresses a complaint.
+   Bad: "pin" (just an aspect term)
+   Good: "pin tụt quá nhanh" (aspect + complaint)
+5. Prefer minimal but complete complaint expressions.
+6. Multiple complaint spans are allowed.
+7. Return an empty list if there is no explicit complaint expression.
+8. Every returned span text must appear exactly in the original review.
+9. Return text only — NO character offsets.
+
+Required output format — return a JSON array:
+[
+  {
+    "id": "record_id",
+    "complaint_spans": [
+      {"text": "complaint expression 1"},
+      {"text": "complaint expression 2"}
+    ]
+  },
+  ...
+]
+
+IMPORTANT:
+- Your response must contain ONLY the JSON array. No explanation, no markdown, no code fences.
+- Each record's id and text are provided below.
+
+BATCH 001 — 25 records
+============================================================
+
+[1] ID: viocd_train_827
+    Split: train
+    Text: màu trắng không gửi gửi màu xanh quá nhỏ luôn
+
+[2] ID: viocd_train_192
+    Split: train
+    Text: đầm thun hơi mỏng nhưng mặc vào mát  cám ơn   cửa hàng
+
+[3] ID: viocd_train_2143
+    Split: train
+    Text: game không hề cân bằng, nạp và không nạp quá khác biệt, hệ thống tìm trận không cân xứng lực chiến 5k gặp 10k 3 ván liền thì chơi gì? và ngoài việc nạp thẻ thì đá cường hoá lấy ở đâu ra??? hay là vng không quan tâm đến người chơi mà chỉ quan tâm đến tiền thu từ nạp thẻ? game hút máu à?
+
+[4] ID: viocd_train_1925
+    Split: train
+    Text: aP có một số nhược điểm: thứ một là nhiều bài hạn chế, tìm không thấy. thứ 2 là việc aP tự động đăng nhập tài khoản zalo mỗi lần truy cập là rất phiền. cuối cùng là khi tôi dùng các ứng dụng chỉnh video như kinemaster, inshot, viva video ... muốn chèn bài hát đã tải ở zing về nhưng tìm không có, chỉ có ... bài đánh giá đầy đủ
+
+[5] ID: viocd_train_1757
+    Split: train
+    Text: kem nền thì ổn rồi mà quà thì quá tệ tặng cũng có tâm chút đi để màu này tặng cây son hồng bé rồi sao xài, thiệt hết nói nỗi 😑😑😑😑
+
+[6] ID: viocd_train_1058
+    Split: train
+    Text: mỗi lần cập nhật lại tốn mấy trăm mình dung lượng. lần này cũng vậy chả lẻ mỗi điện thoại chỉ tải  được  một game như thế này thôi sao? iG nên xem xét lại mà giảm bớt dung lượng game lại đi, còn không có thể iG sẽ giảm bớt nhiều người chơi đấy nhé! mỗi lần cập nhật đa phần không có tính năng nào hay ho ngoại... bài đánh giá đầy đủ
+
+[7] ID: viocd_train_747
+    Split: train
+    Text: mình mua hàng đã xem rất rõ là có tặng kèm quà hay không mà vẫn không có. mua rất nhiều lần và lần đầu tiên mình thất vọng đến vậy 😔
+
+[8] ID: viocd_train_4262
+    Split: train
+    Text: không  quay ngang duoc dien thoai.
+
+[9] ID: viocd_train_644
+    Split: train
+    Text: hãy cho tính năng chưa mở là phần cho mọi người dùng những bộ đồ mình có để ghép thành những bộ đồ mới theo ý mọi người muốn đi , và trong ngôi nhà nhỏ có phố đi dạo để đến nhà những người bạn , có quán cà phê , quán ăn ,... và có thể thay đồ cho con chưa nhắn tin i trong ngôi nhà nhỏ nữa
+
+[10] ID: viocd_train_3284
+    Split: train
+    Text: admin ơi. sao không thấy thông kê các thông số dịch bệnh liên quan đến nước anh vậy
+
+[11] ID: viocd_train_248
+    Split: train
+    Text: facebOk làm ăn kiểu gì vậy, tài khoản cá nhân của tôi không vi phạm tiêu chuẩn cộng đồng gì cả, mà tại sao các ông lại vô hiệu hoá tài khoảng của tôi, tôi thấy facebOk làm ăn quá tệ!!, tài khoản của tôi là chính chủ tên thật có cả cmnd mà facebOk lại vô hiệu hoá tài khoản của tôi không có lý do g... bài đánh giá đầy đủ
+
+[12] ID: viocd_train_220
+    Split: train
+    Text: thấy trả lời bình luận 1m5x 55 60 không vẫn vừa  cỡ  l, mình có 51 không mặc  cỡ  lồn vẫn chật! chán chả buồn nói 😒😒😒
+
+[13] ID: viocd_train_685
+    Split: train
+    Text: son muùi cực kì kinh khủng. mình xem mfg ngày apr2019. mình không biết dòng son này màu nào cũng mùi này hay chỉ có màu đỏ đất- thriLer nude là hôi rình. để xem mấy hôm nữa mùi có tản bớt không, chứ mùi nghe xong là ngất luôn.
+
+[14] ID: viocd_train_1726
+    Split: train
+    Text: anh chị xem khắc phục lại lỗi hộ em với ạ, em tải xong vào thì bảo tải dữ liệu, vừa hiện tải xong lỗi, thử lại thì lại hiện tải xong lại lỗi tiếp,cứ như vậy dù em đã xoá đi tải lại 3 lần rồi ạ, em nghe nói aP này tốt nên tải dùng, mong ac fix nhanh để em trải nghiệm thử ạ, em xin cảm ơn ạ.
+
+[15] ID: viocd_train_1835
+    Split: train
+    Text: vải không đẹp nút gài quá lỏng
+
+[16] ID: viocd_train_3929
+    Split: train
+    Text: game chơi hay. mình xin góp ý một số ý kiến. game nên tách biệt giữa 2 nhóm người chơi đó là chơi giả lập trên pc chơi với nhau và chơi trên điện thoại với nhau để tránh tình trạng thao tác xử lí trên pc tốt hơn. và game nên bỏ hoàn toàn tự ngắm. như thế giúp game thật hơn. cảm ơn game...
+
+[17] ID: viocd_train_202
+    Split: train
+    Text: game hay. ít nhiệm vụ lấy đồ để cày hơn.. thực tiễn hơn.. không như mấy game khác nhiệm vụ cho đồ khác thì theo một khuôn khổ chán quá trời ra..
+
+[18] ID: viocd_train_1546
+    Split: train
+    Text: cứ nói to là được nhưng nó bảo là bạn nhắn tin o không nghe rõ
+
+[19] ID: viocd_train_4259
+    Split: train
+    Text: quần chất đẹp, nhưng bị chật. mà  cửa hàng  có mỗi chuyện gửi địa chỉ để khách đổi hàng cũng không làm được.
+
+[20] ID: viocd_train_3262
+    Split: train
+    Text: vay bong đường chỉ
+
+[21] ID: viocd_train_1734
+    Split: train
+    Text: giao hàng quá lâu
+
+[22] ID: viocd_train_3496
+    Split: train
+    Text: nói chung là  được  cơ mà đọc hơi nhanh và có thêm phần viết chữ cái để ghi nhớ sẽ tốt hơn
+
+[23] ID: viocd_train_2170
+    Split: train
+    Text: hơi rộng tí, nhưng mà hàng y hình, vải đẹp
+
+[24] ID: viocd_train_53
+    Split: train
+    Text: tôi rất thích game này nhưng càng lúc cấu hình game càng nặng, thật sự rất lag luôn, máy bên tôi lúc nào cũng trễ hơn bên đồng đội vài giây, có khi còn bị đứng hình hay cứ bị chạy giật lùi do kết nối mạng nữa. mong game có cách khắc phục chứ game càng lúc càng nặng thì người không có điều kiện đổi m... bài đánh giá đầy đủ
+
+[25] ID: viocd_train_1215
+    Split: train
+    Text: không hiểu ứng dụng hoạt động kiểu gì. tại sao lúc trưa tôi vẫn còn vào được, nhưng chiều thì twiTer bảo nhập mật khẩu, số điên thoại, và tên, tôi đều làm đúng hết nhưng cuối cùng tôi vẫn không thể đăng nhập. thật tồi tệ
+
